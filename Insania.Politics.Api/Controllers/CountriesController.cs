@@ -1,0 +1,58 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+using Insania.Shared.Messages;
+using Insania.Shared.Models.Responses.Base;
+
+using Insania.Politics.Contracts.BusinessLogic;
+
+namespace Insania.Politics.Api.Controllers;
+
+/// <summary>
+/// Контроллер работы с странами
+/// </summary>
+/// <param cref="ILogger" name="logger">Сервис логгирования</param>
+/// <param cref="ICountriesBL" name="countriesService">Сервис работы с бизнес-логикой стран</param>
+[Route("countries")]
+public class CountriesController(ILogger<CountriesController> logger, ICountriesBL countriesService) : Controller
+{
+    #region Зависимости
+    /// <summary>
+    /// Сервис логгирования
+    /// </summary>
+    private readonly ILogger<CountriesController> _logger = logger;
+
+    /// <summary>
+    /// Сервис работы с бизнес-логикой стран
+    /// </summary>
+    private readonly ICountriesBL _countriesService = countriesService;
+    #endregion
+
+    #region Методы
+    /// <summary>
+    /// Метод получения списка стран
+    /// </summary>
+    /// <returns cref="OkResult">Список стран</returns>
+    /// <returns cref="BadRequestResult">Ошибка</returns>
+    [HttpGet]
+    [Route("list")]
+    public async Task<IActionResult> GetList()
+    {
+        try
+        {
+            //Получение результата проверки логина
+            BaseResponse? result = await _countriesService.GetList();
+
+            //Возврат ответа
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text} {ex}", ErrorMessages.Error, ex);
+
+            //Возврат ошибки
+            return BadRequest(new BaseResponseError(ex.Message));
+        }
+    }
+    #endregion
+}
