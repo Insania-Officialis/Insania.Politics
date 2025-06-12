@@ -38,19 +38,19 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
         //Внедрение зависимостей сервисов
         services.AddSingleton(configuration); //конфигурация
         services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации
-        services.AddScoped<IInitializationDAO, InitializationDAO>(); //сервис инициализации данных в бд биологии
+        services.AddScoped<IInitializationDAO, InitializationDAO>(); //сервис инициализации данных в бд политики
 
         //Добавление контекстов бд в коллекцию сервисов
         services.AddDbContext<PoliticsContext>(options =>
         {
             string connectionString = configuration.GetConnectionString("Politics") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
             options.UseNpgsql(connectionString);
-        }); //бд биологии
+        }); //бд политики
         services.AddDbContext<LogsApiPoliticsContext>(options =>
         {
             string connectionString = configuration.GetConnectionString("LogsApiPolitics") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
             options.UseNpgsql(connectionString);
-        }); //бд логов сервиса биологии
+        }); //бд логов сервиса политики
 
         //Добавление параметров логирования
         Log.Logger = new LoggerConfiguration()

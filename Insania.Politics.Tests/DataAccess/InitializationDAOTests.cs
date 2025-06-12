@@ -9,14 +9,14 @@ using Insania.Politics.Tests.Base;
 namespace Insania.Politics.Tests.DataAccess;
 
 /// <summary>
-/// Тесты сервиса инициализации данных в бд файлов
+/// Тесты сервиса инициализации данных в бд политики
 /// </summary>
 [TestFixture]
 public class InitializationDAOTests : BaseTest
 {
     #region Поля
     /// <summary>
-    /// Сервис инициализации данных в бд файлов
+    /// Сервис инициализации данных в бд политики
     /// </summary>
     private IInitializationDAO InitializationDAO { get; set; }
 

@@ -26,8 +26,8 @@ namespace Insania.Politics.DataAccess;
 /// Сервис инициализации данных в бд политики
 /// </summary>
 /// <param cref="ILogger{InitializationDAO}" name="logger">Сервис логгирования</param>
-/// <param cref="PoliticsContext" name="politicsContext">Контекст базы данных пользователей</param>
-/// <param cref="LogsApiPoliticsContext" name="logsApiPoliticsContext">Контекст базы данных логов сервиса пользователей</param>
+/// <param cref="PoliticsContext" name="politicsContext">Контекст базы данных политики</param>
+/// <param cref="LogsApiPoliticsContext" name="logsApiPoliticsContext">Контекст базы данных логов сервиса политики</param>
 /// <param cref="IOptions{InitializationDataSettings}" name="settings">Параметры инициализации данных</param>
 /// <param cref="ITransliterationSL" name="transliteration">Сервис транслитерации</param>
 /// <param cref="IConfiguration" name="configuration">Конфигурация приложения</param>
@@ -44,12 +44,12 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
     private readonly ILogger<InitializationDAO> _logger = logger;
 
     /// <summary>
-    /// Контекст базы данных пользователей
+    /// Контекст базы данных политики
     /// </summary>
     private readonly PoliticsContext _politicsContext = politicsContext;
 
     /// <summary>
-    /// Контекст базы данных логов сервиса пользователей
+    /// Контекст базы данных логов сервиса политики
     /// </summary>
     private readonly LogsApiPoliticsContext _logsApiPoliticsContext = logsApiPoliticsContext;
 
