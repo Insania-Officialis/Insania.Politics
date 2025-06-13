@@ -20,13 +20,13 @@ WORKDIR /src
 COPY ["Insania.Politics", ""]
 
 #Восстановление проекта
-RUN dotnet restore "./Insania.Politics.Api/Insania.Politics.Api.csproj"
+RUN dotnet restore "./Insania.Politics.ApiRead/Insania.Politics.ApiRead.csproj"
 
 #Задание рабочего каталога
-WORKDIR /src/Insania.Politics.Api
+WORKDIR /src/Insania.Politics.ApiRead
 
 #Сборка проекта
-RUN dotnet build "./Insania.Politics.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./Insania.Politics.ApiRead.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 #Использование образа сборки для публикации
 FROM build AS publish
@@ -35,7 +35,7 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 
 #Публикация проекта
-RUN dotnet publish "./Insania.Politics.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Insania.Politics.ApiRead.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 #Использование базового образа для финальных действий
 FROM base AS final
@@ -47,4 +47,4 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 #Запуск приложения
-ENTRYPOINT ["dotnet", "Insania.Politics.Api.dll"]
+ENTRYPOINT ["dotnet", "Insania.Politics.ApiRead.dll"]

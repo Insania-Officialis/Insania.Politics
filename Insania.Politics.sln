@@ -21,9 +21,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Politics.BusinessLo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Politics.Initializer", "Insania.Politics.Initializer\Insania.Politics.Initializer.csproj", "{A4F85BBD-D63F-470D-AC53-A92D7FCB1748}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Politics.Api", "Insania.Politics.Api\Insania.Politics.Api.csproj", "{68D31240-50E9-4FA3-A88E-8460D7BBB7D5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Politics.Middleware", "Insania.Politics.Middleware\Insania.Politics.Middleware.csproj", "{CEA317CF-5BA4-468B-A5C6-27499A841B8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insania.Politics.ApiRead", "Insania.Politics.ApiRead\Insania.Politics.ApiRead.csproj", "{E6529022-A48F-44B9-B708-D12CC48F2008}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,14 +67,14 @@ Global
 		{A4F85BBD-D63F-470D-AC53-A92D7FCB1748}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4F85BBD-D63F-470D-AC53-A92D7FCB1748}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4F85BBD-D63F-470D-AC53-A92D7FCB1748}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68D31240-50E9-4FA3-A88E-8460D7BBB7D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68D31240-50E9-4FA3-A88E-8460D7BBB7D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68D31240-50E9-4FA3-A88E-8460D7BBB7D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68D31240-50E9-4FA3-A88E-8460D7BBB7D5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CEA317CF-5BA4-468B-A5C6-27499A841B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CEA317CF-5BA4-468B-A5C6-27499A841B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEA317CF-5BA4-468B-A5C6-27499A841B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEA317CF-5BA4-468B-A5C6-27499A841B8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6529022-A48F-44B9-B708-D12CC48F2008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6529022-A48F-44B9-B708-D12CC48F2008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6529022-A48F-44B9-B708-D12CC48F2008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6529022-A48F-44B9-B708-D12CC48F2008}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

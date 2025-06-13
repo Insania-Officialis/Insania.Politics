@@ -5,7 +5,7 @@ using Insania.Shared.Models.Responses.Base;
 
 using Insania.Politics.Contracts.BusinessLogic;
 
-namespace Insania.Politics.Api.Controllers;
+namespace Insania.Politics.ApiRead.Controllers;
 
 /// <summary>
 /// Контроллер работы с странами

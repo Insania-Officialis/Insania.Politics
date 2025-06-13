@@ -119,7 +119,7 @@ services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Insania API", Version = "v1" });
 
-    var filePath = Path.Combine(AppContext.BaseDirectory, "Insania.Politics.Api.xml");
+    var filePath = Path.Combine(AppContext.BaseDirectory, "Insania.Politics.ApiRead.xml");
     options.IncludeXmlComments(filePath);
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
