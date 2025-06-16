@@ -1,7 +1,8 @@
-﻿using Insania.Shared.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
+
+using Insania.Shared.Entities;
 
 namespace Insania.Politics.Entities;
 

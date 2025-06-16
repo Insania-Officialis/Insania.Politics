@@ -11,6 +11,7 @@ public interface ICountriesBL
     /// Метод получения списка стран
     /// </summary>
     /// <returns cref="BaseResponseList">Стандартный ответ</returns>
+    /// <remarks>Список стран</remarks>
     /// <exception cref="Exception">Исключение</exception>
     Task<BaseResponseList> GetList();
 }

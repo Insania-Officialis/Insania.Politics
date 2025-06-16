@@ -30,7 +30,7 @@ public class LogsApiPoliticsContext : DbContext
 
     #region Поля
     /// <summary>
-    /// Пользователи
+    /// Логи
     /// </summary>
     public virtual DbSet<LogApiPolitics> Logs { get; set; }
     #endregion

@@ -148,7 +148,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                     await _politicsContext.SaveChangesAsync();
 
                     //Создание шаблона файла скриптов
-                    string pattern = @"^t_types_organizations_\d+.sql";
+                    string pattern = @"^t_organizations_types_\d+.sql";
 
                     //Проходим по всем скриптам
                     foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
