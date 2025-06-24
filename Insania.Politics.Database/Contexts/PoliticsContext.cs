@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using Insania.Politics.Entities;
+﻿using Insania.Politics.Entities;
+using Insania.Shared.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Insania.Politics.Database.Contexts;
 
@@ -43,6 +43,21 @@ public class PoliticsContext : DbContext
     /// Страны
     /// </summary>
     public virtual DbSet<Country> Countries { get; set; }
+
+    /// <summary>
+    /// Типы координат
+    /// </summary>
+    public virtual DbSet<CoordinateTypePolitics> CoordinatesTypes { get; set; }
+
+    /// <summary>
+    /// Координаты
+    /// </summary>
+    public virtual DbSet<CoordinatePolitics> Coordinates { get; set; }
+
+    /// <summary>
+    /// Координаты стран
+    /// </summary>
+    public virtual DbSet<CountryCoordinate> CountriesCoordinates { get; set; }
     #endregion
 
     #region Методы
@@ -55,6 +70,10 @@ public class PoliticsContext : DbContext
         //Установка схемы бд
         modelBuilder.HasDefaultSchema("insania_politics");
 
+        //Меняем базовую модель типа координаты
+        modelBuilder.Ignore<CoordinateType>(); // Игнорируем базовый класс
+        modelBuilder.Entity<CoordinateTypePolitics>(); // Настраиваем только производный
+
         //Создание ограничения уникальности на псевдоним типа организации
         modelBuilder.Entity<OrganizationType>().HasAlternateKey(x => x.Alias);
 
@@ -66,6 +85,15 @@ public class PoliticsContext : DbContext
         
         //Создание ограничения уникальности на цвет страны на карте
         modelBuilder.Entity<Country>().HasAlternateKey(x => x.Color);
+
+        //Создание ограничения уникальности на псевдоним типа координаты
+        modelBuilder.Entity<CoordinateTypePolitics>().HasAlternateKey(x => x.Alias);
+
+        //Добавление gin-индекса на поле с координатами
+        modelBuilder.Entity<CoordinatePolitics>().HasIndex(x => x.PolygonEntity).HasMethod("gin");
+
+        //Создание ограничения уникальности на координату страны
+        modelBuilder.Entity<CountryCoordinate>().HasAlternateKey(x => new { x.CoordinateId, x.CountryId });
     }
     #endregion
 }

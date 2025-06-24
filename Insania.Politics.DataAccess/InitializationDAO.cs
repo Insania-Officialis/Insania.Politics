@@ -95,9 +95,10 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                     string patternDatabases = @"^databases_politics_\d+\.sql$";
                     string connectionDatabase = _configuration.GetConnectionString("PoliticsEmpty") ?? throw new Exception(ErrorMessagesShared.EmptyConnectionString);
                     string patternSchemes = @"^schemes_politics_\d+\.sql$";
+                    string patternExtension = @"^extension_politics_\d+\.sql$";
 
                     //Создание базы данных
-                    await CreateDatabase(connectionServer, patternDatabases, connectionDatabase, patternSchemes);
+                    await CreateDatabase(connectionServer, patternDatabases, connectionDatabase, patternSchemes, patternExtension);
                 }
                 if (_settings.Value.Databases?.LogsApiPolitics == true)
                 {
@@ -344,12 +345,13 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
     /// <summary>
     /// Метод создание базы данных
     /// </summary>
-    /// <param name="connectionServer">Строка подключения к серверу</param>
-    /// <param name="patternDatabases">Шаблон файлов создания базы данных</param>
-    /// <param name="connectionDatabase">Строка подключения к базе данных</param>
-    /// <param name="patternSchemes">Шаблон файлов создания схемы</param>
+    /// <param cref="string" name="connectionServer">Строка подключения к серверу</param>
+    /// <param cref="string" name="patternDatabases">Шаблон файлов создания базы данных</param>
+    /// <param cref="string" name="connectionDatabase">Строка подключения к базе данных</param>
+    /// <param cref="string" name="patternSchemes">Шаблон файлов создания схемы</param>
+    /// <param cref="string?" name="patternExtension">Шаблон файлов создания расширений</param>
     /// <returns></returns>
-    private async Task CreateDatabase(string connectionServer, string patternDatabases, string connectionDatabase, string patternSchemes)
+    private async Task CreateDatabase(string connectionServer, string patternDatabases, string connectionDatabase, string patternSchemes, string? patternExtension = null)
     {
         //Проход по всем скриптам в директории и создание баз данных
         foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), patternDatabases)))
@@ -363,6 +365,16 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
         {
             //Выполнение скрипта
             await ExecuteScript(file, connectionDatabase);
+        }
+
+        //Проход по всем скриптам в директории и создание расширений
+        if (!string.IsNullOrWhiteSpace(patternExtension))
+        {
+            foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), patternExtension)))
+            {
+                //Выполнение скрипта
+                await ExecuteScript(file, connectionDatabase);
+            }
         }
     }
 

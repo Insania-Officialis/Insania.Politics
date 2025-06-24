@@ -44,7 +44,10 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
         services.AddDbContext<PoliticsContext>(options =>
         {
             string connectionString = configuration.GetConnectionString("Politics") ?? throw new Exception(ErrorMessages.EmptyConnectionString);
-            options.UseNpgsql(connectionString);
+            options.UseNpgsql(
+                connectionString,
+                x => x.UseNetTopologySuite()
+            );
         }); //бд политики
         services.AddDbContext<LogsApiPoliticsContext>(options =>
         {
