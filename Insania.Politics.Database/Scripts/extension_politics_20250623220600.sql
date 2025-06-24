@@ -1,1 +1,1 @@
-﻿create extension if not exists postgis;
+﻿create extension if not exists postgis schema insania_politics;

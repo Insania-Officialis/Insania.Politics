@@ -331,6 +331,52 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                     throw;
                 }
             }
+            if (_settings.Value.Tables?.CoordinatesTypes == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции сущностей
+                    List<CoordinateTypePolitics> entities =
+                    [
+                        new(_transliteration, 1, _username, "Удалённый", DateTime.UtcNow),
+                        new(_transliteration, 2, _username, "Страны", null),
+                    ];
+
+                    //Проход по коллекции сущностей
+                    foreach (var entity in entities)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.CoordinatesTypes.Any(x => x.Id == entity.Id)) await _politicsContext.CoordinatesTypes.AddAsync(entity);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_coordinates_types_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
         }
         catch (Exception ex)
         {

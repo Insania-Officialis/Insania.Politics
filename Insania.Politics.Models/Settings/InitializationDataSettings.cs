@@ -48,6 +48,21 @@ public class InitializationDataSettingsIncludeTables
     /// Страны
     /// </summary>
     public bool? Countries { get; set; }
+
+    /// <summary>
+    /// Типы координат
+    /// </summary>
+    public bool? CoordinatesTypes { get; set; }
+
+    /// <summary>
+    /// Координаты
+    /// </summary>
+    public bool? Coordinates { get; set; }
+
+    /// <summary>
+    /// Координаты стран
+    /// </summary>
+    public bool? CountryCoordinates { get; set; }
 }
 
 /// <summary>

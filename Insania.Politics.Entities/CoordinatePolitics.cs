@@ -11,7 +11,7 @@ namespace Insania.Politics.Entities;
 /// <summary>
 /// Модель сущности координаты политики
 /// </summary>
-[Table("r_coordinates_politics")]
+[Table("r_coordinates")]
 [Comment("Логи сервиса политики")]
 public class CoordinatePolitics : Coordinate
 {

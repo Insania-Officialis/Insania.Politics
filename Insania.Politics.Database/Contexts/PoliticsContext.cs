@@ -70,9 +70,16 @@ public class PoliticsContext : DbContext
         //Установка схемы бд
         modelBuilder.HasDefaultSchema("insania_politics");
 
-        //Меняем базовую модель типа координаты
-        modelBuilder.Ignore<CoordinateType>(); // Игнорируем базовый класс
-        modelBuilder.Entity<CoordinateTypePolitics>(); // Настраиваем только производный
+        //Проверка наличия расширения
+        modelBuilder.HasPostgresExtension("postgis");
+
+        //Смена базовой модели типа координаты
+        modelBuilder.Ignore<CoordinateType>();
+        modelBuilder.Entity<CoordinateTypePolitics>();
+
+        //Смена базовой модели координаты
+        modelBuilder.Ignore<Coordinate>();
+        modelBuilder.Entity<CoordinatePolitics>();
 
         //Создание ограничения уникальности на псевдоним типа организации
         modelBuilder.Entity<OrganizationType>().HasAlternateKey(x => x.Alias);
@@ -90,7 +97,7 @@ public class PoliticsContext : DbContext
         modelBuilder.Entity<CoordinateTypePolitics>().HasAlternateKey(x => x.Alias);
 
         //Добавление gin-индекса на поле с координатами
-        modelBuilder.Entity<CoordinatePolitics>().HasIndex(x => x.PolygonEntity).HasMethod("gin");
+        modelBuilder.Entity<CoordinatePolitics>().HasIndex(x => x.PolygonEntity).HasMethod("gist");
 
         //Создание ограничения уникальности на координату страны
         modelBuilder.Entity<CountryCoordinate>().HasAlternateKey(x => new { x.CoordinateId, x.CountryId });

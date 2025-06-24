@@ -10,7 +10,7 @@ namespace Insania.Politics.Entities;
 /// <summary>
 /// Модель сущности типа координаты политики
 /// </summary>
-[Table("d_coordinates_types_politics")]
+[Table("d_coordinates_types")]
 [Comment("Логи сервиса политики")]
 public class CoordinateTypePolitics : CoordinateType
 {
