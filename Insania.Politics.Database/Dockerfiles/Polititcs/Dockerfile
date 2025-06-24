@@ -7,6 +7,7 @@ RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y \
         postgresql-17-postgis-3 \
+        postgresql-17-postgis-3-scripts \
     && rm -rf /var/lib/apt/lists/*
 
 #Проброс порта
