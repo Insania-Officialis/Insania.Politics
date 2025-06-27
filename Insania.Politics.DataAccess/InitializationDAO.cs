@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text.Json;
+using System.Text.RegularExpressions;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using NetTopologySuite.Geometries;
 using Npgsql;
 
 using Insania.Shared.Contracts.DataAccess;
@@ -30,8 +32,9 @@ namespace Insania.Politics.DataAccess;
 /// <param cref="LogsApiPoliticsContext" name="logsApiPoliticsContext">Контекст базы данных логов сервиса политики</param>
 /// <param cref="IOptions{InitializationDataSettings}" name="settings">Параметры инициализации данных</param>
 /// <param cref="ITransliterationSL" name="transliteration">Сервис транслитерации</param>
+/// <param cref="IPolygonParserSL" name="polygonParser">Сервис преобразования полигона</param>
 /// <param cref="IConfiguration" name="configuration">Конфигурация приложения</param>
-public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContext politicsContext, LogsApiPoliticsContext logsApiPoliticsContext, IOptions<InitializationDataSettings> settings, ITransliterationSL transliteration, IConfiguration configuration) : IInitializationDAO
+public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContext politicsContext, LogsApiPoliticsContext logsApiPoliticsContext, IOptions<InitializationDataSettings> settings, ITransliterationSL transliteration, IPolygonParserSL polygonParser, IConfiguration configuration) : IInitializationDAO
 {
     #region Поля
     private readonly string _username = "initializer";
@@ -62,6 +65,11 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
     /// Сервис транслитерации
     /// </summary>
     private readonly ITransliterationSL _transliteration = transliteration;
+
+    /// <summary>
+    /// Сервис преобразования полигона
+    /// </summary>
+    private readonly IPolygonParserSL _polygonParser = polygonParser;
 
     /// <summary>
     /// Конфигурация приложения
@@ -364,6 +372,66 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                         //Выполняем скрипт
                         await ExecuteScript(file, _politicsContext);
                     }
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Coordinates == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "[[[0,0],[0,5],[5,0],[0,0]]]", "1", DateTime.UtcNow.ToString()],
+                        ["2", "[[[0,0],[0,5],[5,0],[0,0]]]", "2", ""],
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.Coordinates.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            CoordinateTypePolitics type = await _politicsContext.CoordinatesTypes.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundCoordinateType);
+
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
+                            double[][][] coordinates = JsonSerializer.Deserialize<double[][][]>(key[1]) ?? throw new Exception(ErrorMessagesShared.EmptyCoordinates);
+                            Polygon polygon = _polygonParser.FromDoubleArrayToPolygon(coordinates);
+                            CoordinatePolitics entity = new(long.Parse(key[0]), _username, true, polygon, type, dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _politicsContext.Coordinates.AddAsync(entity);
+                        }
+                    }
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_coordinates_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
 
                     //Фиксация транзакции
                     transaction.Commit();

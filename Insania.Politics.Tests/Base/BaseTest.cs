@@ -40,6 +40,8 @@ public abstract class BaseTest
            {"InitializationDataSettings:Tables:OrganizationsTypes", "true"},
            {"InitializationDataSettings:Tables:Organizations", "true"},
            {"InitializationDataSettings:Tables:Countries", "true"},
+           {"InitializationDataSettings:Tables:CoordinatesTypes", "true"},
+           {"InitializationDataSettings:Tables:Coordinates", "true"},
            {"TokenSettings:Issuer", "Politics.Test"},
            {"TokenSettings:Audience", "Politics.Test"},
            {"TokenSettings:Key", "This key is generated for tests in the user zone"},
@@ -55,6 +57,7 @@ public abstract class BaseTest
         //Внедрение зависимостей сервисов
         services.AddSingleton(_ => configuration); //конфигурация
         services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации
+        services.AddScoped<IPolygonParserSL, PolygonParserSL>(); //сервис преобразования полигонов
         services.AddScoped<IInitializationDAO, InitializationDAO>(); //сервис инициализации данных в бд политики
         services.AddPoliticsBL(); //сервисы работы с бизнес-логикой в зоне политики
 

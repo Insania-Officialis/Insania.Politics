@@ -38,6 +38,7 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
         //Внедрение зависимостей сервисов
         services.AddSingleton(configuration); //конфигурация
         services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации
+        services.AddScoped<IPolygonParserSL, PolygonParserSL>(); //сервис преобразования полигонов
         services.AddScoped<IInitializationDAO, InitializationDAO>(); //сервис инициализации данных в бд политики
 
         //Добавление контекстов бд в коллекцию сервисов
