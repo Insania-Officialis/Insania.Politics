@@ -20,7 +20,7 @@ namespace Insania.Politics.Database.Migrations
                 .Annotation("Npgsql:PostgresExtension:postgis", ",,");
 
             migrationBuilder.CreateTable(
-                name: "d_coordinates_types",
+                name: "c_coordinates_types",
                 schema: "insania_politics",
                 columns: table => new
                 {
@@ -36,13 +36,13 @@ namespace Insania.Politics.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_d_coordinates_types", x => x.id);
-                    table.UniqueConstraint("AK_d_coordinates_types_alias", x => x.alias);
+                    table.PrimaryKey("PK_c_coordinates_types", x => x.id);
+                    table.UniqueConstraint("AK_c_coordinates_types_alias", x => x.alias);
                 },
-                comment: "Логи сервиса политики");
+                comment: "Типы координат политики");
 
             migrationBuilder.CreateTable(
-                name: "d_organizations_types",
+                name: "c_organizations_types",
                 schema: "insania_politics",
                 columns: table => new
                 {
@@ -58,8 +58,8 @@ namespace Insania.Politics.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_d_organizations_types", x => x.id);
-                    table.UniqueConstraint("AK_d_organizations_types_alias", x => x.alias);
+                    table.PrimaryKey("PK_c_organizations_types", x => x.id);
+                    table.UniqueConstraint("AK_c_organizations_types_alias", x => x.alias);
                 },
                 comment: "Типы организаций");
 
@@ -83,7 +83,7 @@ namespace Insania.Politics.Database.Migrations
                 {
                     table.PrimaryKey("PK_r_coordinates", x => x.id);
                 },
-                comment: "Логи сервиса политики");
+                comment: "Координаты политики");
 
             migrationBuilder.CreateTable(
                 name: "r_organizations",
@@ -107,10 +107,10 @@ namespace Insania.Politics.Database.Migrations
                     table.PrimaryKey("PK_r_organizations", x => x.id);
                     table.UniqueConstraint("AK_r_organizations_name", x => x.name);
                     table.ForeignKey(
-                        name: "FK_r_organizations_d_organizations_types_type_id",
+                        name: "FK_r_organizations_c_organizations_types_type_id",
                         column: x => x.type_id,
                         principalSchema: "insania_politics",
-                        principalTable: "d_organizations_types",
+                        principalTable: "c_organizations_types",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -123,7 +123,7 @@ namespace Insania.Politics.Database.Migrations
                 comment: "Организации");
 
             migrationBuilder.CreateTable(
-                name: "d_countries",
+                name: "c_countries",
                 schema: "insania_politics",
                 columns: table => new
                 {
@@ -143,11 +143,11 @@ namespace Insania.Politics.Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_d_countries", x => x.id);
-                    table.UniqueConstraint("AK_d_countries_alias", x => x.alias);
-                    table.UniqueConstraint("AK_d_countries_color", x => x.color);
+                    table.PrimaryKey("PK_c_countries", x => x.id);
+                    table.UniqueConstraint("AK_c_countries_alias", x => x.alias);
+                    table.UniqueConstraint("AK_c_countries_color", x => x.color);
                     table.ForeignKey(
-                        name: "FK_d_countries_r_organizations_organization_id",
+                        name: "FK_c_countries_r_organizations_organization_id",
                         column: x => x.organization_id,
                         principalSchema: "insania_politics",
                         principalTable: "r_organizations",
@@ -179,19 +179,19 @@ namespace Insania.Politics.Database.Migrations
                     table.PrimaryKey("PK_u_countries_coordinates", x => x.id);
                     table.UniqueConstraint("AK_u_countries_coordinates_coordinate_id_country_id", x => new { x.coordinate_id, x.country_id });
                     table.ForeignKey(
-                        name: "FK_u_countries_coordinates_d_countries_country_id",
+                        name: "FK_u_countries_coordinates_c_countries_country_id",
                         column: x => x.country_id,
                         principalSchema: "insania_politics",
-                        principalTable: "d_countries",
+                        principalTable: "c_countries",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 },
                 comment: "Координаты стран");
 
             migrationBuilder.CreateIndex(
-                name: "IX_d_countries_organization_id",
+                name: "IX_c_countries_organization_id",
                 schema: "insania_politics",
-                table: "d_countries",
+                table: "c_countries",
                 column: "organization_id");
 
             migrationBuilder.CreateIndex(
@@ -224,7 +224,7 @@ namespace Insania.Politics.Database.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "d_coordinates_types",
+                name: "c_coordinates_types",
                 schema: "insania_politics");
 
             migrationBuilder.DropTable(
@@ -236,7 +236,7 @@ namespace Insania.Politics.Database.Migrations
                 schema: "insania_politics");
 
             migrationBuilder.DropTable(
-                name: "d_countries",
+                name: "c_countries",
                 schema: "insania_politics");
 
             migrationBuilder.DropTable(
@@ -244,7 +244,7 @@ namespace Insania.Politics.Database.Migrations
                 schema: "insania_politics");
 
             migrationBuilder.DropTable(
-                name: "d_organizations_types",
+                name: "c_organizations_types",
                 schema: "insania_politics");
         }
     }

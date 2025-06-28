@@ -1,6 +1,8 @@
-﻿using Insania.Politics.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+
 using Insania.Shared.Entities;
-using Microsoft.EntityFrameworkCore;
+
+using Insania.Politics.Entities;
 
 namespace Insania.Politics.Database.Contexts;
 
@@ -30,7 +32,7 @@ public class PoliticsContext : DbContext
 
     #region Поля
     /// <summary>
-    /// Тип организаций
+    /// Типы организаций
     /// </summary>
     public virtual DbSet<OrganizationType> OrganizationsTypes { get; set; }
 

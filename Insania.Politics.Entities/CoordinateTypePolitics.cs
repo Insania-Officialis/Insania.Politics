@@ -10,8 +10,8 @@ namespace Insania.Politics.Entities;
 /// <summary>
 /// Модель сущности типа координаты политики
 /// </summary>
-[Table("d_coordinates_types")]
-[Comment("Логи сервиса политики")]
+[Table("c_coordinates_types")]
+[Comment("Типы координат политики")]
 public class CoordinateTypePolitics : CoordinateType
 {
     #region Конструкторы

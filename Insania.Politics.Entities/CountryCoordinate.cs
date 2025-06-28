@@ -32,6 +32,7 @@ public class CountryCoordinate : EntityCoordinate
     /// <param cref="Point" name="center">Координаты точки центра сущности</param>
     /// <param cref="int" name="zoom">Коэффициент масштаба отображения сущности</param>
     /// <param cref="CoordinatePolitics" name="coordinate">Координата</param>
+    /// <param cref="Country" name="country">Страна</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
     public CountryCoordinate(string username, bool isSystem, Point center, int zoom, CoordinatePolitics coordinate, Country country, DateTime? dateDeleted = null) : base(username, isSystem, center, zoom, coordinate, dateDeleted)
     {
@@ -48,6 +49,7 @@ public class CountryCoordinate : EntityCoordinate
     /// <param cref="Point" name="center">Координаты точки центра сущности</param>
     /// <param cref="int" name="zoom">Коэффициент масштаба отображения сущности</param>
     /// <param cref="CoordinatePolitics" name="coordinate">Координата</param>
+    /// <param cref="Country" name="country">Страна</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
     public CountryCoordinate(long id, string username, bool isSystem, Point center, int zoom, CoordinatePolitics coordinate, Country country, DateTime? dateDeleted = null) : base(id, username, isSystem, center, zoom, coordinate, dateDeleted)
     {

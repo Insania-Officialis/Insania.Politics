@@ -8,15 +8,15 @@ using Insania.Shared.Entities;
 namespace Insania.Politics.Entities;
 
 /// <summary>
-/// Модель сущности тип организации
+/// Модель сущности типа организации
 /// </summary>
-[Table("d_organizations_types")]
+[Table("c_organizations_types")]
 [Comment("Типы организаций")]
 public class OrganizationType : Compendium
 {
     #region Конструкторы
     /// <summary>
-    /// Простой конструктор модели сущности тип организации
+    /// Простой конструктор модели сущности типа организации
     /// </summary>
     public OrganizationType() : base()
     {
@@ -24,7 +24,7 @@ public class OrganizationType : Compendium
     }
 
     /// <summary>
-    /// Конструктор модели сущности тип организации без идентификатора
+    /// Конструктор модели сущности типа организации без идентификатора
     /// </summary>
     /// <param cref="ITransliterationSL" name="transliteration">Сервис транслитерации</param>
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
@@ -36,7 +36,7 @@ public class OrganizationType : Compendium
     }
 
     /// <summary>
-    /// Конструктор модели сущности тип организации с идентификатором
+    /// Конструктор модели сущности типа организации с идентификатором
     /// </summary>
     /// <param cref="ITransliterationSL" name="transliteration">Сервис транслитерации</param>
     /// <param cref="long?" name="id">Идентификатор пользователя</param>

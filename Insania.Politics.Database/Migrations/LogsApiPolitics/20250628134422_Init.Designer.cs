@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Politics.Database.Migrations.LogsApiPolitics
 {
     [DbContext(typeof(LogsApiPoliticsContext))]
-    [Migration("20250624085435_Init")]
+    [Migration("20250628134422_Init")]
     partial class Init
     {
         /// <inheritdoc />

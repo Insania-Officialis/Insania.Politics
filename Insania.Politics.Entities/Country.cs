@@ -10,7 +10,7 @@ namespace Insania.Politics.Entities;
 /// <summary>
 /// Модель сущности страны
 /// </summary>
-[Table("d_countries")]
+[Table("c_countries")]
 [Comment("Страны")]
 public class Country : Compendium
 {

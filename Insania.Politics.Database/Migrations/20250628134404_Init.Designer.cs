@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Politics.Database.Migrations
 {
     [DbContext(typeof(PoliticsContext))]
-    [Migration("20250624085105_Init")]
+    [Migration("20250628134404_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -89,7 +89,7 @@ namespace Insania.Politics.Database.Migrations
 
                     b.ToTable("r_coordinates", "insania_politics", t =>
                         {
-                            t.HasComment("Логи сервиса политики");
+                            t.HasComment("Координаты политики");
                         });
                 });
 
@@ -146,9 +146,9 @@ namespace Insania.Politics.Database.Migrations
 
                     b.HasAlternateKey("Alias");
 
-                    b.ToTable("d_coordinates_types", "insania_politics", t =>
+                    b.ToTable("c_coordinates_types", "insania_politics", t =>
                         {
-                            t.HasComment("Логи сервиса политики");
+                            t.HasComment("Типы координат политики");
                         });
                 });
 
@@ -232,7 +232,7 @@ namespace Insania.Politics.Database.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("d_countries", "insania_politics", t =>
+                    b.ToTable("c_countries", "insania_politics", t =>
                         {
                             t.HasComment("Страны");
                         });
@@ -438,7 +438,7 @@ namespace Insania.Politics.Database.Migrations
 
                     b.HasAlternateKey("Alias");
 
-                    b.ToTable("d_organizations_types", "insania_politics", t =>
+                    b.ToTable("c_organizations_types", "insania_politics", t =>
                         {
                             t.HasComment("Типы организаций");
                         });

@@ -12,7 +12,7 @@ namespace Insania.Politics.Entities;
 /// Модель сущности координаты политики
 /// </summary>
 [Table("r_coordinates")]
-[Comment("Логи сервиса политики")]
+[Comment("Координаты политики")]
 public class CoordinatePolitics : Coordinate
 {
     #region Конструкторы
