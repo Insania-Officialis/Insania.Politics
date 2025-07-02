@@ -11,9 +11,9 @@ namespace Insania.Politics.ApiRead.Controllers;
 /// Контроллер работы с странами
 /// </summary>
 /// <param cref="ILogger" name="logger">Сервис логгирования</param>
-/// <param cref="ICountriesBL" name="countriesService">Сервис работы с бизнес-логикой стран</param>
+/// <param cref="ICountriesBL" name="countriesBL">Сервис работы с бизнес-логикой стран</param>
 [Route("countries")]
-public class CountriesController(ILogger<CountriesController> logger, ICountriesBL countriesService) : Controller
+public class CountriesController(ILogger<CountriesController> logger, ICountriesBL countriesBL) : Controller
 {
     #region Зависимости
     /// <summary>
@@ -24,7 +24,7 @@ public class CountriesController(ILogger<CountriesController> logger, ICountries
     /// <summary>
     /// Сервис работы с бизнес-логикой стран
     /// </summary>
-    private readonly ICountriesBL _countriesService = countriesService;
+    private readonly ICountriesBL _countriesBL = countriesBL;
     #endregion
 
     #region Методы
@@ -40,7 +40,7 @@ public class CountriesController(ILogger<CountriesController> logger, ICountries
         try
         {
             //Получение результата проверки логина
-            BaseResponse? result = await _countriesService.GetList();
+            BaseResponse? result = await _countriesBL.GetList();
 
             //Возврат ответа
             return Ok(result);

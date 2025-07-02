@@ -19,8 +19,8 @@ namespace Insania.Politics.BusinessLogic;
 /// </summary>
 /// <param cref="ILogger{CountriesBL}" name="logger">Сервис логгирования</param>
 /// <param cref="IMapper" name="mapper">Сервис преобразования моделей</param>
-/// <param cref="ICountriesDAO" name="CountriesDAO">Сервис работы с данными стран</param>
-public class CountriesBL(ILogger<CountriesBL> logger, IMapper mapper, ICountriesDAO CountriesDAO) : ICountriesBL
+/// <param cref="ICountriesDAO" name="countriesDAO">Сервис работы с данными стран</param>
+public class CountriesBL(ILogger<CountriesBL> logger, IMapper mapper, ICountriesDAO countriesDAO) : ICountriesBL
 {
     #region Зависимости
     /// <summary>
@@ -36,7 +36,7 @@ public class CountriesBL(ILogger<CountriesBL> logger, IMapper mapper, ICountries
     /// <summary>
     /// Сервис работы с данными стран
     /// </summary>
-    private readonly ICountriesDAO _CountriesDAO = CountriesDAO;
+    private readonly ICountriesDAO _countriesDAO = countriesDAO;
     #endregion
 
     #region Методы
@@ -53,7 +53,7 @@ public class CountriesBL(ILogger<CountriesBL> logger, IMapper mapper, ICountries
             _logger.LogInformation(InformationMessages.EnteredGetListCountriesMethod);
 
             //Получение данных
-            List<Country>? data = await _CountriesDAO.GetList();
+            List<Country>? data = await _countriesDAO.GetList();
 
             //Формирование ответа
             BaseResponseList? response = null;
