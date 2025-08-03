@@ -62,5 +62,29 @@ public class CountriesDAOTests : BaseTest
             throw;
         }
     }
+
+    /// <summary>
+    /// Тест метода получения списка стран с проверкой наличия координат
+    /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task GetListWithCheckCoordinatesTest(bool hasCoordinates)
+    {
+        try
+        {
+            //Получение результата
+            List<Country>? result = await CountriesDAO.GetList(hasCoordinates: hasCoordinates);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Not.Empty);
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
     #endregion
 }

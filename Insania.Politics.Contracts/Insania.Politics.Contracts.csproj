@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Insania.Politics.Entities\Insania.Politics.Entities.csproj" />
+    <ProjectReference Include="..\Insania.Politics.Models\Insania.Politics.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,8 +10,9 @@ public interface ICountriesBL
     /// <summary>
     /// Метод получения списка стран
     /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <returns cref="BaseResponseList">Стандартный ответ</returns>
     /// <remarks>Список стран</remarks>
     /// <exception cref="Exception">Исключение</exception>
-    Task<BaseResponseList> GetList();
+    Task<BaseResponseList> GetList(bool? hasCoordinates = null);
 }

@@ -62,7 +62,7 @@ public class InitializationDataSettingsIncludeTables
     /// <summary>
     /// Координаты стран
     /// </summary>
-    public bool? CountryCoordinates { get; set; }
+    public bool? CountriesCoordinates { get; set; }
 }
 
 /// <summary>

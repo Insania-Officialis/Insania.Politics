@@ -55,12 +55,37 @@ public class CountriesBLTests : BaseTest
 
             //Проверка результата
             Assert.That(result, Is.Not.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Success, Is.True);
-                Assert.That(result.Items, Is.Not.Null);
-                Assert.That(result.Items, Is.Not.Empty);
-            });
+            using (Assert.EnterMultipleScope())
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Items, Is.Not.Null);
+            Assert.That(result.Items, Is.Not.Empty);
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка стран с проверкой наличия координат
+    /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task GetListWithCheckCoordinatesTest(bool hasCoordinates)
+    {
+        try
+        {
+            //Получение результата
+            BaseResponseList? result = await CountriesBL.GetList(hasCoordinates);
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            using (Assert.EnterMultipleScope())
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Items, Is.Not.Null);
+            Assert.That(result.Items, Is.Not.Empty);
         }
         catch (Exception)
         {

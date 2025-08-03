@@ -10,7 +10,8 @@ public interface ICountriesDAO
     /// <summary>
     /// Метод получения списка стран
     /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <returns cref="List{Country}">Список стран</returns>
     /// <exception cref="Exception">Исключение</exception>
-    Task<List<Country>> GetList();
+    Task<List<Country>> GetList(bool? hasCoordinates = null);
 }

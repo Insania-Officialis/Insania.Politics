@@ -75,13 +75,33 @@ public class PoliticsContext : DbContext
         //Проверка наличия расширения
         modelBuilder.HasPostgresExtension("postgis");
 
-        //Смена базовой модели типа координаты
-        modelBuilder.Ignore<CoordinateType>();
-        modelBuilder.Entity<CoordinateTypePolitics>();
+        //Настройка сущности типа координаты
+        modelBuilder.Entity<CoordinateType>(entity =>
+        {
+            //Установка наименования таблицы
+            entity.ToTable("c_coordinates_types");
 
-        //Смена базовой модели координаты
-        modelBuilder.Ignore<Coordinate>();
-        modelBuilder.Entity<CoordinatePolitics>();
+            //Смена базовой модели типа координаты
+            entity.HasDiscriminator<string>("TypeDiscriminator")
+                  .HasValue<CoordinateTypePolitics>("Politics");
+
+            //Создание ограничения уникальности на псевдоним наименования типа координаты
+            entity.HasAlternateKey(x => x.Alias);
+        });
+
+        //Настройка сущности координаты
+        modelBuilder.Entity<Coordinate>(entity =>
+        {
+            //Установка наименования таблицы
+            entity.ToTable("r_coordinates");
+
+            //Смена базовой модели координаты
+            entity.HasDiscriminator<string>("TypeDiscriminator")
+                  .HasValue<CoordinatePolitics>("Politics");
+
+            //Создание ограничения уникальности на псевдоним типа координаты
+            modelBuilder.Entity<CoordinatePolitics>().HasIndex(x => x.PolygonEntity).HasMethod("gist");
+        });
 
         //Создание ограничения уникальности на псевдоним типа организации
         modelBuilder.Entity<OrganizationType>().HasAlternateKey(x => x.Alias);
@@ -95,14 +115,14 @@ public class PoliticsContext : DbContext
         //Создание ограничения уникальности на цвет страны на карте
         modelBuilder.Entity<Country>().HasAlternateKey(x => x.Color);
 
-        //Создание ограничения уникальности на псевдоним типа координаты
-        modelBuilder.Entity<CoordinateTypePolitics>().HasAlternateKey(x => x.Alias);
-
-        //Добавление gin-индекса на поле с координатами
-        modelBuilder.Entity<CoordinatePolitics>().HasIndex(x => x.PolygonEntity).HasMethod("gist");
-
         //Создание ограничения уникальности на координату страны
-        modelBuilder.Entity<CountryCoordinate>().HasAlternateKey(x => new { x.CoordinateId, x.CountryId });
+        modelBuilder.Entity<CountryCoordinate>().HasIndex(x => new { x.CoordinateId, x.CountryId, x.DateDeleted }).IsUnique();
+
+        //Добавление вторичного ключа для координат
+        modelBuilder.Entity<CountryCoordinate>()
+            .HasOne(x => x.CoordinateEntity)
+            .WithMany()
+            .HasForeignKey(x => x.CoordinateId);
     }
     #endregion
 }

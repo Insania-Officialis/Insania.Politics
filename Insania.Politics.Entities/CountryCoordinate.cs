@@ -30,11 +30,12 @@ public class CountryCoordinate : EntityCoordinate
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
     /// <param cref="bool" name="isSystem">Признак системной записи</param>
     /// <param cref="Point" name="center">Координаты точки центра сущности</param>
+    /// <param cref="double" name="area">Площадь географического объекта</param>
     /// <param cref="int" name="zoom">Коэффициент масштаба отображения сущности</param>
     /// <param cref="CoordinatePolitics" name="coordinate">Координата</param>
     /// <param cref="Country" name="country">Страна</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public CountryCoordinate(string username, bool isSystem, Point center, int zoom, CoordinatePolitics coordinate, Country country, DateTime? dateDeleted = null) : base(username, isSystem, center, zoom, coordinate, dateDeleted)
+    public CountryCoordinate(string username, bool isSystem, Point center, double area, int zoom, CoordinatePolitics coordinate, Country country, DateTime? dateDeleted = null) : base(username, isSystem, center, area, zoom, coordinate, dateDeleted)
     {
         CountryId = country.Id;
         CountryEntity = country;
@@ -47,11 +48,12 @@ public class CountryCoordinate : EntityCoordinate
     /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
     /// <param cref="bool" name="isSystem">Признак системной записи</param>
     /// <param cref="Point" name="center">Координаты точки центра сущности</param>
+    /// <param cref="double" name="area">Площадь географического объекта</param>
     /// <param cref="int" name="zoom">Коэффициент масштаба отображения сущности</param>
     /// <param cref="CoordinatePolitics" name="coordinate">Координата</param>
     /// <param cref="Country" name="country">Страна</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public CountryCoordinate(long id, string username, bool isSystem, Point center, int zoom, CoordinatePolitics coordinate, Country country, DateTime? dateDeleted = null) : base(id, username, isSystem, center, zoom, coordinate, dateDeleted)
+    public CountryCoordinate(long id, string username, bool isSystem, Point center, double area, int zoom, CoordinatePolitics coordinate, Country country, DateTime? dateDeleted = null) : base(id, username, isSystem, center, area, zoom, coordinate, dateDeleted)
     {
         CountryId = country.Id;
         CountryEntity = country;

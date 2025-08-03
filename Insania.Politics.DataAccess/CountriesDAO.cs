@@ -33,17 +33,32 @@ public class CountriesDAO(ILogger<CountriesDAO> logger, PoliticsContext context)
     /// <summary>
     /// Метод получения списка стран
     /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <returns cref="List{Country}">Список стран</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<Country>> GetList()
+    public async Task<List<Country>> GetList(bool? hasCoordinates = null)
     {
         try
         {
             //Логгирование
             _logger.LogInformation(InformationMessages.EnteredGetListCountriesMethod);
 
+            //Формирование запроса
+            IQueryable<Country> query = _context.Countries.Where(x => x.DateDeleted == null);
+            if (hasCoordinates.HasValue) 
+            {
+                query = query
+                    .Include(x => x.CountryCoordinates)
+                    .Where(x => (hasCoordinates ?? false)
+                        ? x.CountryCoordinates != null &&
+                          x.CountryCoordinates.Any(y => y.DateDeleted == null)
+                        : x.CountryCoordinates == null ||
+                          !x.CountryCoordinates.Any(y => y.DateDeleted == null)
+                    );
+            }
+
             //Получение данных из бд
-            List<Country> data = await _context.Countries.Where(x => x.DateDeleted == null).ToListAsync();
+            List<Country> data = await query.ToListAsync();
 
             //Возврат результата
             return data;

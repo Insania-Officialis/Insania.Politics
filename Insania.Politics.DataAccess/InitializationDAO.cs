@@ -349,8 +349,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                     //Создание коллекции сущностей
                     List<CoordinateTypePolitics> entities =
                     [
-                        new(_transliteration, 1, _username, "Удалённый", DateTime.UtcNow),
-                        new(_transliteration, 2, _username, "Страны", null),
+                        new(_transliteration, 1, _username, "Удалённый", "", "", DateTime.UtcNow),
+                        new(_transliteration, 2, _username, "Страны", "#464646", "", null),
                     ];
 
                     //Проход по коллекции сущностей
@@ -412,7 +412,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                             DateTime? dateDeleted = null;
                             if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
                             double[][][] coordinates = JsonSerializer.Deserialize<double[][][]>(key[1]) ?? throw new Exception(ErrorMessagesShared.EmptyCoordinates);
-                            Polygon polygon = _polygonParser.FromDoubleArrayToPolygon(coordinates);
+                            Polygon polygon = _polygonParser.FromDoubleArrayToPolygon(coordinates) ?? throw new Exception(ErrorMessagesShared.IncorrectCoordinates);
                             CoordinatePolitics entity = new(long.Parse(key[0]), _username, true, polygon, type, dateDeleted);
 
                             //Добавление сущности в бд
@@ -422,6 +422,68 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
 
                     //Создание шаблона файла скриптов
                     string pattern = @"^t_coordinates_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.CountriesCoordinates == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "2", "1", ""],
+                        ["10000", "1", "1", DateTime.UtcNow.ToString()],
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.CountriesCoordinates.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            CoordinatePolitics coordinate = await _politicsContext.Coordinates.FirstOrDefaultAsync(x => x.Id == long.Parse(key[1])) ?? throw new Exception($"{ErrorMessagesPolitics.NotFoundCoordinate}: {key[1]}");
+                            Country country = await _politicsContext.Countries.FirstOrDefaultAsync(x => x.Id == long.Parse(key[2])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
+
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[3])) dateDeleted = DateTime.Parse(key[3]);
+                            Point center = coordinate.PolygonEntity.InteriorPoint;
+                            double area = coordinate.PolygonEntity.Area;
+                            int zoom = 3;
+                            CountryCoordinate entity = new(long.Parse(key[0]), _username, true, center, area, zoom, coordinate, country, dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _politicsContext.CountriesCoordinates.AddAsync(entity);
+                        }
+                    }
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_countries_coordinates_\d+.sql";
 
                     //Проходим по всем скриптам
                     foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))

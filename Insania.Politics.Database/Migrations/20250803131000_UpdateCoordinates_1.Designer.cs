@@ -3,6 +3,7 @@ using System;
 using Insania.Politics.Database.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Insania.Politics.Database.Migrations
 {
     [DbContext(typeof(PoliticsContext))]
-    partial class PoliticsContextModelSnapshot : ModelSnapshot
+    [Migration("20250803131000_UpdateCoordinates_1")]
+    partial class UpdateCoordinates_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +27,138 @@ namespace Insania.Politics.Database.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "postgis");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Insania.Politics.Entities.CoordinatePolitics", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id")
+                        .HasComment("Первичный ключ таблицы");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("DateCreate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_create")
+                        .HasComment("Дата создания");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_deleted")
+                        .HasComment("Дата удаления");
+
+                    b.Property<DateTime>("DateUpdate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_update")
+                        .HasComment("Дата обновления");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_system")
+                        .HasComment("Признак системной записи");
+
+                    b.Property<Polygon>("PolygonEntity")
+                        .IsRequired()
+                        .HasColumnType("geometry")
+                        .HasColumnName("polygon")
+                        .HasComment("Полигон (массив координат)");
+
+                    b.Property<long?>("TypeId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("type_id")
+                        .HasComment("Идентификатор типа координаты");
+
+                    b.Property<string>("UsernameCreate")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("username_create")
+                        .HasComment("Логин пользователя, создавшего");
+
+                    b.Property<string>("UsernameUpdate")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("username_update")
+                        .HasComment("Логин пользователя, обновившего");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PolygonEntity");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("PolygonEntity"), "gist");
+
+                    b.ToTable("r_coordinates", "insania_politics", t =>
+                        {
+                            t.HasComment("Координаты политики");
+                        });
+                });
+
+            modelBuilder.Entity("Insania.Politics.Entities.CoordinateTypePolitics", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id")
+                        .HasComment("Первичный ключ таблицы");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Alias")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("alias")
+                        .HasComment("Псевдоним");
+
+                    b.Property<string>("BackgroundColor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("BorderColor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DateCreate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_create")
+                        .HasComment("Дата создания");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_deleted")
+                        .HasComment("Дата удаления");
+
+                    b.Property<DateTime>("DateUpdate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_update")
+                        .HasComment("Дата обновления");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name")
+                        .HasComment("Наименование");
+
+                    b.Property<string>("UsernameCreate")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("username_create")
+                        .HasComment("Логин пользователя, создавшего");
+
+                    b.Property<string>("UsernameUpdate")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("username_update")
+                        .HasComment("Логин пользователя, обновившего");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("Alias");
+
+                    b.ToTable("c_coordinates_types", "insania_politics", t =>
+                        {
+                            t.HasComment("Типы координат политики");
+                        });
+                });
 
             modelBuilder.Entity("Insania.Politics.Entities.Country", b =>
                 {
@@ -132,7 +267,7 @@ namespace Insania.Politics.Database.Migrations
                         .HasColumnName("center")
                         .HasComment("Координаты точки центра сущности");
 
-                    b.Property<long?>("CoordinateId")
+                    b.Property<long>("CoordinateId")
                         .HasColumnType("bigint")
                         .HasColumnName("coordinate_id")
                         .HasComment("Идентификатор координаты");
@@ -181,10 +316,9 @@ namespace Insania.Politics.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasAlternateKey("CoordinateId", "CountryId");
 
-                    b.HasIndex("CoordinateId", "CountryId", "DateDeleted")
-                        .IsUnique();
+                    b.HasIndex("CountryId");
 
                     b.ToTable("u_countries_coordinates", "insania_politics", t =>
                         {
@@ -323,176 +457,6 @@ namespace Insania.Politics.Database.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Insania.Shared.Entities.Coordinate", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id")
-                        .HasComment("Первичный ключ таблицы");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("DateCreate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_create")
-                        .HasComment("Дата создания");
-
-                    b.Property<DateTime?>("DateDeleted")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_deleted")
-                        .HasComment("Дата удаления");
-
-                    b.Property<DateTime>("DateUpdate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_update")
-                        .HasComment("Дата обновления");
-
-                    b.Property<bool>("IsSystem")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_system")
-                        .HasComment("Признак системной записи");
-
-                    b.Property<Polygon>("PolygonEntity")
-                        .IsRequired()
-                        .HasColumnType("geometry")
-                        .HasColumnName("polygon")
-                        .HasComment("Полигон (массив координат)");
-
-                    b.Property<string>("TypeDiscriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("character varying(13)");
-
-                    b.Property<long?>("TypeId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("type_id")
-                        .HasComment("Идентификатор типа координаты");
-
-                    b.Property<string>("UsernameCreate")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("username_create")
-                        .HasComment("Логин пользователя, создавшего");
-
-                    b.Property<string>("UsernameUpdate")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("username_update")
-                        .HasComment("Логин пользователя, обновившего");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("r_coordinates", "insania_politics");
-
-                    b.HasDiscriminator<string>("TypeDiscriminator").HasValue("Coordinate");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Insania.Shared.Entities.CoordinateType", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id")
-                        .HasComment("Первичный ключ таблицы");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Alias")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("alias")
-                        .HasComment("Псевдоним");
-
-                    b.Property<string>("BackgroundColor")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("BorderColor")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("DateCreate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_create")
-                        .HasComment("Дата создания");
-
-                    b.Property<DateTime?>("DateDeleted")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_deleted")
-                        .HasComment("Дата удаления");
-
-                    b.Property<DateTime>("DateUpdate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_update")
-                        .HasComment("Дата обновления");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name")
-                        .HasComment("Наименование");
-
-                    b.Property<string>("TypeDiscriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("character varying(21)");
-
-                    b.Property<string>("UsernameCreate")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("username_create")
-                        .HasComment("Логин пользователя, создавшего");
-
-                    b.Property<string>("UsernameUpdate")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("username_update")
-                        .HasComment("Логин пользователя, обновившего");
-
-                    b.HasKey("Id");
-
-                    b.HasAlternateKey("Alias");
-
-                    b.ToTable("c_coordinates_types", "insania_politics");
-
-                    b.HasDiscriminator<string>("TypeDiscriminator").HasValue("CoordinateType");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Insania.Politics.Entities.CoordinatePolitics", b =>
-                {
-                    b.HasBaseType("Insania.Shared.Entities.Coordinate");
-
-                    b.HasIndex("PolygonEntity");
-
-                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("PolygonEntity"), "gist");
-
-                    b.ToTable("r_coordinates", "insania_politics", t =>
-                        {
-                            t.HasComment("Координаты политики");
-                        });
-
-                    b.HasDiscriminator().HasValue("Politics");
-                });
-
-            modelBuilder.Entity("Insania.Politics.Entities.CoordinateTypePolitics", b =>
-                {
-                    b.HasBaseType("Insania.Shared.Entities.CoordinateType");
-
-                    b.ToTable("c_coordinates_types", "insania_politics", t =>
-                        {
-                            t.HasComment("Типы координат политики");
-                        });
-
-                    b.HasDiscriminator().HasValue("Politics");
-                });
-
             modelBuilder.Entity("Insania.Politics.Entities.Country", b =>
                 {
                     b.HasOne("Insania.Politics.Entities.Organization", "OrganizationEntity")
@@ -506,17 +470,11 @@ namespace Insania.Politics.Database.Migrations
 
             modelBuilder.Entity("Insania.Politics.Entities.CountryCoordinate", b =>
                 {
-                    b.HasOne("Insania.Shared.Entities.Coordinate", "CoordinateEntity")
-                        .WithMany()
-                        .HasForeignKey("CoordinateId");
-
                     b.HasOne("Insania.Politics.Entities.Country", "CountryEntity")
                         .WithMany()
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CoordinateEntity");
 
                     b.Navigation("CountryEntity");
                 });
@@ -534,15 +492,6 @@ namespace Insania.Politics.Database.Migrations
                         .IsRequired();
 
                     b.Navigation("ParentEntity");
-
-                    b.Navigation("TypeEntity");
-                });
-
-            modelBuilder.Entity("Insania.Shared.Entities.Coordinate", b =>
-                {
-                    b.HasOne("Insania.Shared.Entities.CoordinateType", "TypeEntity")
-                        .WithMany()
-                        .HasForeignKey("TypeId");
 
                     b.Navigation("TypeEntity");
                 });

@@ -104,6 +104,11 @@ public class Country : Compendium
     /// Навигационное свойство организации
     /// </summary>
     public Organization OrganizationEntity { get; private set; }
+
+    /// <summary>
+    /// Навигационное свойство координат страны
+    /// </summary>
+    public ICollection<CountryCoordinate>? CountryCoordinates { get; private set; }
     #endregion
 
     #region Методы

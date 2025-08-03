@@ -19,5 +19,6 @@ public static class Extension
         services
             .AddPoliticsDAO() //сервисы работы с данными в зоне политики
             .AddScoped<ICountriesBL, CountriesBL>() //сервис работы с бизнес-логикой стран
+            .AddScoped<ICountriesCoordinatesBL, CountriesCoordinatesBL>() //сервис работы с бизнес-логикой координат стран
         ;
 }

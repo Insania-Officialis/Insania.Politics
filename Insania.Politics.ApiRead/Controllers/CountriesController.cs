@@ -31,16 +31,17 @@ public class CountriesController(ILogger<CountriesController> logger, ICountries
     /// <summary>
     /// Метод получения списка стран
     /// </summary>
+    /// <param cref="bool" name="has_coordinates">Проверка наличия координат</param>
     /// <returns cref="OkResult">Список стран</returns>
     /// <returns cref="BadRequestResult">Ошибка</returns>
     [HttpGet]
     [Route("list")]
-    public async Task<IActionResult> GetList()
+    public async Task<IActionResult> GetList([FromQuery] bool? has_coordinates = null)
     {
         try
         {
             //Получение результата проверки логина
-            BaseResponse? result = await _countriesBL.GetList();
+            BaseResponse? result = await _countriesBL.GetList(has_coordinates);
 
             //Возврат ответа
             return Ok(result);

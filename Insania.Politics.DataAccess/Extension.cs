@@ -20,5 +20,6 @@ public static class Extension
             .AddScoped<IOrganizationsDAO, OrganizationsDAO>() //сервис работы с данными организаций
             .AddScoped<ICountriesDAO, CountriesDAO>() //сервис работы с данными стран
             .AddScoped<ICoordinatesDAO, CoordinatesDAO>() //сервис работы с данными координат
+            .AddScoped<ICountriesCoordinatesDAO, CountriesCoordinatesDAO>() //сервис работы с данными координат стран
         ;
 }

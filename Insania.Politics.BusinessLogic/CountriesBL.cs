@@ -43,9 +43,10 @@ public class CountriesBL(ILogger<CountriesBL> logger, IMapper mapper, ICountries
     /// <summary>
     /// Метод получения списка стран
     /// </summary>
+    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
     /// <returns cref="BaseResponseList">Стандартный ответ</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<BaseResponseList> GetList()
+    public async Task<BaseResponseList> GetList(bool? hasCoordinates = null)
     {
         try
         {
@@ -53,7 +54,7 @@ public class CountriesBL(ILogger<CountriesBL> logger, IMapper mapper, ICountries
             _logger.LogInformation(InformationMessages.EnteredGetListCountriesMethod);
 
             //Получение данных
-            List<Country>? data = await _countriesDAO.GetList();
+            List<Country>? data = await _countriesDAO.GetList(hasCoordinates);
 
             //Формирование ответа
             BaseResponseList? response = null;

@@ -42,6 +42,7 @@ public abstract class BaseTest
            {"InitializationDataSettings:Tables:Countries", "true"},
            {"InitializationDataSettings:Tables:CoordinatesTypes", "true"},
            {"InitializationDataSettings:Tables:Coordinates", "true"},
+           {"InitializationDataSettings:Tables:CountriesCoordinates", "true"},
            {"TokenSettings:Issuer", "Politics.Test"},
            {"TokenSettings:Audience", "Politics.Test"},
            {"TokenSettings:Key", "This key is generated for tests in the user zone"},
@@ -74,7 +75,10 @@ public abstract class BaseTest
         services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(Log.Logger, dispose: true));
 
         //Добавление параметров преобразования моделей
-        services.AddAutoMapper(typeof(PoliticsMappingProfile));
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.AddProfile<PoliticsMappingProfile>();
+        });
 
         //Добавление параметров инициализации данных
         IConfigurationSection? initializationDataSettings = configuration.GetSection("InitializationDataSettings");

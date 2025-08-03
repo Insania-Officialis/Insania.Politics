@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.7" />
+    
     <PackageReference Include="Insania.Shared.Models" Version="1.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Insania.Politics.Contracts\Insania.Politics.Contracts.csproj" />
     <ProjectReference Include="..\Insania.Politics.DataAccess\Insania.Politics.DataAccess.csproj" />
   </ItemGroup>
 

@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+using NetTopologySuite;
+using NetTopologySuite.IO.Converters;
 using Serilog;
 
 using Insania.Shared.Contracts.Services;
@@ -80,6 +82,7 @@ services
 //Внедрение зависимостей сервисов
 services.AddSingleton(_ => configuration); //конфигурация
 services.AddScoped<ITransliterationSL, TransliterationSL>(); //сервис транслитерации
+services.AddScoped<IPolygonParserSL, PolygonParserSL>(); //сервис преобразования полигона
 services.AddPoliticsBL(); //сервисы работы с бизнес-логикой в зоне политики
 
 //Добавление контекстов бд в коллекцию сервисов
@@ -158,10 +161,14 @@ services
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
         options.JsonSerializerOptions.WriteIndented = true;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.Converters.Add(new GeoJsonConverterFactory(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326)));
     });
 
 //Добавление параметров преобразования моделей
-services.AddAutoMapper(typeof(PoliticsMappingProfile));
+services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<PoliticsMappingProfile>();
+});
 
 //Построение веб-приложения
 WebApplication app = builder.Build();
