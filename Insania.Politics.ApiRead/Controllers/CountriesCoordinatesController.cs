@@ -13,7 +13,7 @@ namespace Insania.Politics.ApiRead.Controllers;
 /// </summary>
 /// <param cref="ILogger" name="logger">Сервис логгирования</param>
 /// <param cref="ICountriesCoordinatesBL" name="countriesCoordinatesBL">Сервис работы с бизнес-логикой координат стран</param>
-[Route("geography_objects_coordinates")]
+[Route("countries_coordinates")]
 public class CountriesCoordinatesController(ILogger<CountriesCoordinatesController> logger, ICountriesCoordinatesBL countriesCoordinatesBL) : Controller
 {
     #region Зависимости
