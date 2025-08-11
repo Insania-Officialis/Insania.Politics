@@ -33,6 +33,42 @@ public class CountriesCoordinatesDAO(ILogger<CountriesCoordinatesDAO> logger, Po
 
     #region Методы
     /// <summary>
+    /// Метод получения координаты страны по идентификатору
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты страны</param>
+    /// <returns cref="CountryCoordinate?">Координата страны</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<CountryCoordinate?> GetById(long? id)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredGetByIdCountryCoordinateMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesPolitics.NotFoundCountryCoordinate);
+
+            //Получение данных из бд
+            CountryCoordinate? data = await _context.CountriesCoordinates
+                .Where(x => x.Id == id)
+                .Include(x => x.CountryEntity)
+                .Include(x => x.CoordinateEntity)
+                .FirstOrDefaultAsync();
+
+            //Возврат результата
+            return data;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Метод получения списка координат стран
     /// </summary>
     /// <returns cref="List{CountryCoordinate}">Список координат стран</returns>
@@ -81,7 +117,7 @@ public class CountriesCoordinatesDAO(ILogger<CountriesCoordinatesDAO> logger, Po
             if (countryId == null) throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
 
             //Получение данных из бд
-            List<CountryCoordinate> data = await context
+            List<CountryCoordinate> data = await _context
                 .CountriesCoordinates
                 .Include(x => x.CountryEntity)
                 .Include(x => x.CoordinateEntity)
@@ -91,6 +127,90 @@ public class CountriesCoordinatesDAO(ILogger<CountriesCoordinatesDAO> logger, Po
 
             //Возврат результата
             return data;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод восстановления координаты страны
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты страны</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="bool">Признак успешности</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<bool> Restore(long? id, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredRestoreCountryCoordinateMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesPolitics.NotFoundCountryCoordinate);
+
+            //Получение данных из бд
+            CountryCoordinate data = await GetById(id) ?? throw new Exception(ErrorMessagesPolitics.NotFoundCountryCoordinate);
+
+            //Проверки
+            if (data.DateDeleted == null) throw new Exception(ErrorMessagesPolitics.NotDeletedCountryCoordinate);
+
+            //Запись данных в бд
+            data.SetRestored();
+            data.SetUpdate(username);
+            _context.Update(data);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return true;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод закрытия координаты страны
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор координаты страны</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="bool">Признак успешности</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<bool> Close(long? id, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredCloseCountryCoordinateMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesPolitics.NotFoundCountryCoordinate);
+
+            //Получение данных из бд
+            CountryCoordinate data = await GetById(id) ?? throw new Exception(ErrorMessagesPolitics.NotFoundCountryCoordinate);
+
+            //Проверки
+            if (data.DateDeleted != null) throw new Exception(ErrorMessagesPolitics.DeletedCountryCoordinate);
+
+            //Запись данных в бд
+            data.SetDeleted();
+            data.SetUpdate(username);
+            _context.Update(data);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return true;
         }
         catch (Exception ex)
         {
