@@ -50,5 +50,14 @@ public class CoordinatePolitics : Coordinate
     {
 
     }
+
+    /// <summary>
+    /// Конструктор модели сущности координаты географии с сущностью
+    /// </summary>
+    /// <param cref="Coordinate" name="entity">Базовая сущность</param>
+    public CoordinatePolitics(Coordinate entity) : base(entity.Id, entity.UsernameCreate, entity.IsSystem, entity.PolygonEntity, entity.TypeEntity!, entity.DateDeleted)
+    {
+
+    }
     #endregion
 }
