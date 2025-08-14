@@ -4,9 +4,11 @@ using Microsoft.Extensions.Logging;
 using Insania.Politics.Contracts.DataAccess;
 using Insania.Politics.Database.Contexts;
 using Insania.Politics.Entities;
-using Insania.Politics.Messages;
 
-using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
+
+using ErrorMessagesPolitics = Insania.Politics.Messages.ErrorMessages;
+using InformationMessages = Insania.Politics.Messages.InformationMessages;
 
 namespace Insania.Politics.DataAccess;
 
@@ -30,6 +32,40 @@ public class CountriesDAO(ILogger<CountriesDAO> logger, PoliticsContext context)
     #endregion
 
     #region Методы
+    /// <summary>
+    /// Метод получения страны по идентификатору
+    /// </summary>
+    /// <param cref="long?" name="id">Идентификатор страны</param>
+    /// <returns cref="Country?">Страна</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<Country?> GetById(long? id)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredGetByIdCountryMethod);
+
+            //Проверки
+            if (id == null) throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
+
+            //Получение данных из бд
+            Country? data = await _context.Countries
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+
+            //Возврат результата
+            return data;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
     /// <summary>
     /// Метод получения списка стран
     /// </summary>
@@ -66,7 +102,7 @@ public class CountriesDAO(ILogger<CountriesDAO> logger, PoliticsContext context)
         catch (Exception ex)
         {
             //Логгирование
-            _logger.LogError("{text}: {error}", ErrorMessages.Error, ex.Message);
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
 
             //Проброс исключения
             throw;

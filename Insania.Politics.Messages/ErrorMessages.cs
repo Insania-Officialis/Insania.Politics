@@ -6,7 +6,12 @@
 public static class ErrorMessages
 {
     public const string DeletedCoordinate = "Указанная координата удалена";
+    public const string DeletedCoordinateType = "Указанный тип координаты удалён";
+    public const string DeletedCountry = "Указанная страна удалена";
     public const string DeletedCountryCoordinate = "Указанная координата страны удалена";
+    public const string EmptyZoom = "Пустой коэффициент масштаба отображения сущности";
+    public const string ExistsCountryCoordinate = "Указанная координата страны уже существует";
+    public const string IncorrectZoom = "Некорректный коэффициент масштаба отображения сущности";
     public const string NotDeletedCoordinate = "Указанная координата не удалена";
     public const string NotDeletedCountryCoordinate = "Указанная координата страны не удалена";
     public const string NotFoundCoordinate = "Не найдена координата";

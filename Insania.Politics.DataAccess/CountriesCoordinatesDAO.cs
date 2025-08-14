@@ -101,6 +101,47 @@ public class CountriesCoordinatesDAO(ILogger<CountriesCoordinatesDAO> logger, Po
     }
 
     /// <summary>
+    /// Метод получения координаты страны по идентификаторам страны и координаты
+    /// </summary>
+    /// <param cref="long?" name="countryId">Идентификатор страны</param>
+    /// <param cref="long?" name="coordinateId">Идентификатор координаты</param>
+    /// <returns cref="CountryCoordinate?">Координата страны</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<CountryCoordinate?> GetByCountryIdAndCoordinateId(long? countryId, long? coordinateId)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredGetByCountryIdAndCoordinateIdCountryCoordinateMethod);
+
+            //Проверки
+            if (countryId == null) throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
+            if (coordinateId == null) throw new Exception(ErrorMessagesPolitics.NotFoundCoordinate);
+
+            //Получение данных из бд
+            CountryCoordinate? data = await _context.CountriesCoordinates
+                .Where(x => x.CountryId == countryId
+                    && x.CoordinateId == coordinateId
+                )
+                .OrderBy(x => x.DateDeleted)
+                .Include(x => x.CountryEntity)
+                .Include(x => x.CoordinateEntity)
+                .FirstOrDefaultAsync();
+
+            //Возврат результата
+            return data;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Метод получения списка координат стран по идентификатору страны
     /// </summary>
     /// <param cref="long?" name="countryId">Идентификатор страны</param>
@@ -127,6 +168,54 @@ public class CountriesCoordinatesDAO(ILogger<CountriesCoordinatesDAO> logger, Po
 
             //Возврат результата
             return data;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Метод добавления координаты страны
+    /// </summary>
+    /// <param cref="Country?" name="country">Страна</param>
+    /// <param cref="CoordinatePolitics?" name="coordinate">Координаты</param>
+    /// <param cref="int?" name="zoom">Коэффициент масштаба отображения сущности</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="long?">Идентификатор координаты страны</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<long?> Add(Country? country, CoordinatePolitics? coordinate, int? zoom, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredAddCountryCoordinateMethod);
+
+            //Проверки
+            if (country == null) throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
+            if (coordinate == null) throw new Exception(ErrorMessagesPolitics.NotFoundCoordinate);
+            if (zoom == null) throw new Exception(ErrorMessagesPolitics.EmptyZoom);
+            if (country.DateDeleted != null) throw new Exception(ErrorMessagesPolitics.DeletedCountry);
+            if (coordinate.DateDeleted != null) throw new Exception(ErrorMessagesPolitics.DeletedCoordinate);
+            if (zoom < 3 || zoom > 24) throw new Exception(ErrorMessagesPolitics.IncorrectZoom);
+
+            //Получение данных из бд
+            CountryCoordinate? data = await GetByCountryIdAndCoordinateId(country.Id, coordinate.Id);
+
+            //Проверки
+            if (data != null) throw new Exception(ErrorMessagesPolitics.ExistsCountryCoordinate);
+
+            //Запись данных в бд
+            CountryCoordinate CountryCoordinate = new(username, false, coordinate.PolygonEntity.InteriorPoint, coordinate.PolygonEntity.Area, zoom ?? 3, coordinate, country);
+            await _context.CountriesCoordinates.AddAsync(CountryCoordinate);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return CountryCoordinate.Id;
         }
         catch (Exception ex)
         {

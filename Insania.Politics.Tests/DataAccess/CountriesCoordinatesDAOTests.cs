@@ -29,6 +29,16 @@ public class CountriesCoordinatesDAOTests : BaseTest
     /// Сервис работы с данными координат стран
     /// </summary>
     private ICountriesCoordinatesDAO CountriesCoordinatesDAO { get; set; }
+
+    /// <summary>
+    /// Сервис работы с данными стран
+    /// </summary>
+    private ICountriesDAO CountriesDAO { get; set; }
+
+    /// <summary>
+    /// Сервис работы с данными координат 
+    /// </summary>
+    private ICoordinatesDAO CoordinatesDAO { get; set; }
     #endregion
 
     #region Общие методы
@@ -40,6 +50,8 @@ public class CountriesCoordinatesDAOTests : BaseTest
     {
         //Получение зависимости
         CountriesCoordinatesDAO = ServiceProvider.GetRequiredService<ICountriesCoordinatesDAO>();
+        CountriesDAO = ServiceProvider.GetRequiredService<ICountriesDAO>();
+        CoordinatesDAO = ServiceProvider.GetRequiredService<ICoordinatesDAO>();
     }
 
     /// <summary>
@@ -86,6 +98,43 @@ public class CountriesCoordinatesDAOTests : BaseTest
             }
         }
     }
+
+    /// <summary>
+    /// Тест метода получения координаты страны по идентификаторам страны и координаты
+    /// </summary>
+    /// <param cref="long?" name="countryId">Идентификатор страны</param>
+    /// <param cref="long?" name="coordinateId">Идентификатор координаты</param>
+    [TestCase(null, null)]
+    [TestCase(-1, null)]
+    [TestCase(-1, -1)]
+    [TestCase(1, 3)]
+    public async Task GetByCountryIdAndCoordinateIdTest(long? countryId, long? coordinateId)
+    {
+        try
+        {
+            //Получение результата
+            CountryCoordinate? result = await CountriesCoordinatesDAO.GetByCountryIdAndCoordinateId(countryId, coordinateId);
+
+            //Проверка результата
+            switch (countryId, coordinateId)
+            {
+                case (-1, -1): Assert.That(result, Is.Null); break;
+                case (1, 3): Assert.That(result, Is.Not.Null); break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception ex)
+        {
+            //Проверка исключения
+            switch (countryId, coordinateId)
+            {
+                case (null, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCountry)); break;
+                case (-1, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCoordinate)); break;
+                default: throw;
+            }
+        }
+    }
+
 
     /// <summary>
     /// Тест метода получения списка координат стран
@@ -139,6 +188,70 @@ public class CountriesCoordinatesDAOTests : BaseTest
             switch (countryId)
             {
                 case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCountry)); break;
+                default: throw;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Тест метода добавления координаты
+    /// </summary>
+    /// <param cref="long?" name="countryId">Идентификатор страны</param>
+    /// <param cref="long?" name="coordinateId">Идентификатор координаты</param>
+    /// <param cref="int?" name="zoom">Коэффициент масштаба отображения сущности</param>
+    [TestCase(null, null, null)]
+    [TestCase(-1, null, null)]
+    [TestCase(1, null, null)]
+    [TestCase(1, -1, null)]
+    [TestCase(1, 1, null)]
+    [TestCase(1, 1, -1)]
+    [TestCase(10000, 1, -1)]
+    [TestCase(1, 1, -1)]
+    [TestCase(1, 3, -1)]
+    [TestCase(1, 2, 3)]
+    public async Task AddTest(long? countryId, long? coordinateId, int? zoom)
+    {
+        try
+        {
+            //Формирование запроса
+            Country? country = null;
+            if (countryId != null) country = await CountriesDAO.GetById(countryId);
+            CoordinatePolitics? coordinate = null;
+            if (coordinateId != null) coordinate = await CoordinatesDAO.GetById(coordinateId);
+
+            //Получение результата
+            long? result = await CountriesCoordinatesDAO.Add(country, coordinate, zoom, _username);
+
+            //Получение значения
+            CountryCoordinate? countryCoordinate = null;
+            if (result != null) countryCoordinate = await CountriesCoordinatesDAO.GetById(result);
+
+            //Проверка результата
+            switch (countryId, coordinateId, zoom)
+            {
+                case (1, 2, 3):
+                    Assert.That(result, Is.Positive);
+                    Assert.That(countryCoordinate, Is.Not.Null);
+                    Assert.That(countryCoordinate?.DateDeleted, Is.Null);
+                    Assert.That(countryCoordinate?.CountryId, Is.EqualTo(countryId));
+                    Assert.That(countryCoordinate?.CoordinateId, Is.EqualTo(coordinateId));
+                    await CountriesCoordinatesDAO.Close(result, _username);
+                    break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception ex)
+        {
+            //Проверка исключения
+            switch (countryId, coordinateId, zoom)
+            {
+                case (null, null, null): case (-1, null, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCountry)); break;
+                case (1, null, null): case (1, -1, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCoordinate)); break;
+                case (1, 1, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.EmptyZoom)); break;
+                case (10000, 1, -1): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.DeletedCountry)); break;
+                case (1, 1, -1): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.DeletedCoordinate)); break;
+                case (1, 3, -1): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.IncorrectZoom)); break;
+                case (1, 2, 1): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.ExistsCountryCoordinate)); break;
                 default: throw;
             }
         }

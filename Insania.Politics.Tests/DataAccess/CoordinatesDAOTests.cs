@@ -1,4 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Text.Json;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+
+using NetTopologySuite.Geometries;
+
+using Insania.Shared.Contracts.Services;
 
 using Insania.Politics.Contracts.DataAccess;
 using Insania.Politics.Entities;
@@ -28,6 +35,16 @@ public class CoordinatesDAOTests : BaseTest
     /// Сервис работы с данными координат
     /// </summary>
     private ICoordinatesDAO CoordinatesDAO { get; set; }
+
+    /// <summary>
+    /// Сервис работы с данными типов координат
+    /// </summary>
+    private ICoordinatesTypesDAO CoordinatesTypesDAO { get; set; }
+
+    /// <summary>
+    /// Сервис преобразования полигона
+    /// </summary>
+    private IPolygonParserSL PolygonParserSL { get; set; }
     #endregion
 
     #region Общие методы
@@ -39,6 +56,8 @@ public class CoordinatesDAOTests : BaseTest
     {
         //Получение зависимости
         CoordinatesDAO = ServiceProvider.GetRequiredService<ICoordinatesDAO>();
+        CoordinatesTypesDAO = ServiceProvider.GetRequiredService<ICoordinatesTypesDAO>();
+        PolygonParserSL = ServiceProvider.GetRequiredService<IPolygonParserSL>();
     }
 
     /// <summary>
@@ -105,6 +124,67 @@ public class CoordinatesDAOTests : BaseTest
         {
             //Проброс исключения
             throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода добавления координаты
+    /// </summary>
+    /// <param cref="string?" name="coordinates">Координаты</param>
+    /// <param cref="long?" name="typeId">Идентификатор типа координаты</param>
+    [TestCase(null, null)]
+    [TestCase("[[[0, 0],[0, 5],[5, 0]]]", null)]
+    [TestCase("[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]", null)]
+    [TestCase("[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]", -1)]
+    [TestCase("[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]", 1)]
+    [TestCase("[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]", 2)]
+    public async Task AddTest(string? coordinates, long? typeId)
+    {
+        try
+        {
+            //Формирование запроса
+            Polygon? polygon = null;
+            if (!string.IsNullOrWhiteSpace(coordinates))
+            {
+                double[][][]? coordinatesArray = JsonSerializer.Deserialize<double[][][]>(coordinates);
+                if (coordinatesArray != null)
+                {
+                    polygon = PolygonParserSL.FromDoubleArrayToPolygon(coordinatesArray) ?? throw new Exception(ErrorMessagesShared.IncorrectCoordinates);
+                }
+            }
+            CoordinateTypePolitics? type = null;
+            if (typeId != null) type = await CoordinatesTypesDAO.GetById(typeId);
+
+            //Получение результата
+            long? result = await CoordinatesDAO.Add(polygon, type, _username);
+
+            //Получение значения
+            CoordinatePolitics? coordinate = await CoordinatesDAO.GetById(result);
+
+            //Проверка результата
+            switch (coordinates, typeId)
+            {
+                case ("[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]", 2):
+                    Assert.That(result, Is.Positive);
+                    Assert.That(coordinate, Is.Not.Null);
+                    Assert.That(coordinate?.PolygonEntity, Is.Not.Null);
+                    await CoordinatesDAO.Close(result, _username);
+                    break;
+                default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
+            }
+        }
+        catch (Exception ex)
+        {
+            //Проверка исключения
+            switch (coordinates, typeId)
+            {
+                case (null, null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesShared.EmptyCoordinates)); break;
+                case ("[[[0, 0],[0, 5],[5, 0]]]", null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesShared.IncorrectCoordinates)); break;
+                case ("[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]", null): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCoordinateType)); break;
+                case ("[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]", -1): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCoordinateType)); break;
+                case ("[[[0, 0],[0, 20],[20, 20],[20, 0],[0, 0]],[[5, 5],[5, 15],[15, 15],[15, 5],[5, 5]]]", 1): Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.DeletedCoordinateType)); break;
+                default: throw;
+            }
         }
     }
 

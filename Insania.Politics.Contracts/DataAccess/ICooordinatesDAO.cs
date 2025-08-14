@@ -1,4 +1,6 @@
-﻿using Insania.Politics.Entities;
+﻿using NetTopologySuite.Geometries;
+
+using Insania.Politics.Entities;
 
 namespace Insania.Politics.Contracts.DataAccess;
 
@@ -21,6 +23,16 @@ public interface ICoordinatesDAO
     /// <returns cref="List{CoordinatePolitics}">Список координат</returns>
     /// <exception cref="Exception">Исключение</exception>
     Task<List<CoordinatePolitics>> GetList();
+
+    /// <summary>
+    /// Метод добавление координаты
+    /// </summary>
+    /// <param cref="Polygon?" name="coordinates">Координаты</param>
+    /// <param cref="CoordinateTypePolitics?" name="type">Тип координаты</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="long?">Идентификатор записи</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    Task<long?> Add(Polygon? coordinates, CoordinateTypePolitics? type, string username);
 
     /// <summary>
     /// Метод восстановления координаты

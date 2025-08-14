@@ -13,7 +13,7 @@ using ErrorMessagesPolitics = Insania.Politics.Messages.ErrorMessages;
 namespace Insania.Politics.Tests.BusinessLogic;
 
 /// <summary>
-/// Тесты сервиса работы с бизнес-логикой координат географических объектов
+/// Тесты сервиса работы с бизнес-логикой координат стран
 /// </summary>
 [TestFixture]
 public class CountriesCoordinatesBLTests : BaseTest
@@ -27,7 +27,7 @@ public class CountriesCoordinatesBLTests : BaseTest
 
     #region Зависимости
     /// <summary>
-    /// Сервис работы с бизнес-логикой координат географических объектов
+    /// Сервис работы с бизнес-логикой координат стран
     /// </summary>
     private ICountriesCoordinatesBL CountriesCoordinatesBL { get; set; }
 
@@ -61,9 +61,9 @@ public class CountriesCoordinatesBLTests : BaseTest
 
     #region Методы тестирования
     /// <summary>
-    /// Тест метода получения списка координат географических объектов по идентификатору географического объекта
+    /// Тест метода получения списка координат стран по идентификатору страны
     /// </summary>
-    /// <param cref="long?" name="countryId">Идентификатор географического объекта</param>
+    /// <param cref="long?" name="countryId">Идентификатор страны</param>
     [TestCase(null)]
     [TestCase(-1)]
     [TestCase(10000)]

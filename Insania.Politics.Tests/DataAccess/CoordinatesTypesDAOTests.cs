@@ -11,16 +11,16 @@ using ErrorMessagesPolitics = Insania.Politics.Messages.ErrorMessages;
 namespace Insania.Politics.Tests.DataAccess;
 
 /// <summary>
-/// Тесты сервиса работы с данными стран
+/// Тесты сервиса работы с данными типов координат
 /// </summary>
 [TestFixture]
-public class CountriesDAOTests : BaseTest
+public class CoordinatesTypesDAOTests : BaseTest
 {
     #region Поля
     /// <summary>
-    /// Сервис работы с данными стран
+    /// Сервис работы с данными типов координат
     /// </summary>
-    private ICountriesDAO CountriesDAO { get; set; }
+    private ICoordinatesTypesDAO CoordinatesTypesDAO { get; set; }
     #endregion
 
     #region Общие методы
@@ -31,7 +31,7 @@ public class CountriesDAOTests : BaseTest
     public void Setup()
     {
         //Получение зависимости
-        CountriesDAO = ServiceProvider.GetRequiredService<ICountriesDAO>();
+        CoordinatesTypesDAO = ServiceProvider.GetRequiredService<ICoordinatesTypesDAO>();
     }
 
     /// <summary>
@@ -46,25 +46,25 @@ public class CountriesDAOTests : BaseTest
 
     #region Методы тестирования
     /// <summary>
-    /// Тест метода получения страны по идентификатору
+    /// Тест метода получения типа координаты по идентификатору
     /// </summary>
-    /// <param cref="long?" name="id">Идентификатор страны</param>
+    /// <param cref="long?" name="id">Идентификатор типа координаты</param>
     [TestCase(null)]
     [TestCase(-1)]
-    [TestCase(10000)]
     [TestCase(1)]
+    [TestCase(2)]
     public async Task GetByIdTest(long? id)
     {
         try
         {
             //Получение результата
-            Country? result = await CountriesDAO.GetById(id);
+            CoordinateTypePolitics? result = await CoordinatesTypesDAO.GetById(id);
 
             //Проверка результата
             switch (id)
             {
                 case -1: Assert.That(result, Is.Null); break;
-                case 10000: case 1: Assert.That(result, Is.Not.Null); break;
+                case 1: case 2: Assert.That(result, Is.Not.Null); break;
                 default: throw new Exception(ErrorMessagesShared.NotFoundTestCase);
             }
         }
@@ -73,14 +73,13 @@ public class CountriesDAOTests : BaseTest
             //Проверка исключения
             switch (id)
             {
-                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCountry)); break;
+                case null: Assert.That(ex.Message, Is.EqualTo(ErrorMessagesPolitics.NotFoundCoordinateType)); break;
                 default: throw;
             }
         }
     }
-
     /// <summary>
-    /// Тест метода получения списка стран
+    /// Тест метода получения списка типов координат
     /// </summary>
     [Test]
     public async Task GetListTest()
@@ -88,31 +87,7 @@ public class CountriesDAOTests : BaseTest
         try
         {
             //Получение результата
-            List<Country>? result = await CountriesDAO.GetList();
-
-            //Проверка результата
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.Not.Empty);
-        }
-        catch (Exception)
-        {
-            //Проброс исключения
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// Тест метода получения списка стран с проверкой наличия координат
-    /// </summary>
-    /// <param cref="bool?" name="hasCoordinates">Проверка наличия координат</param>
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task GetListWithCheckCoordinatesTest(bool hasCoordinates)
-    {
-        try
-        {
-            //Получение результата
-            List<Country>? result = await CountriesDAO.GetList(hasCoordinates: hasCoordinates);
+            List<CoordinateTypePolitics>? result = await CoordinatesTypesDAO.GetList();
 
             //Проверка результата
             Assert.That(result, Is.Not.Null);

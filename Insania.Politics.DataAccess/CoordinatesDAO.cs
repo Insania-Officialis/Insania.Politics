@@ -1,13 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
-using Insania.Politics.Contracts.DataAccess;
+﻿using Insania.Politics.Contracts.DataAccess;
 using Insania.Politics.Database.Contexts;
 using Insania.Politics.Entities;
-
-using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
-
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
 using ErrorMessagesPolitics = Insania.Politics.Messages.ErrorMessages;
+using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
 using InformationMessages = Insania.Politics.Messages.InformationMessages;
 
 namespace Insania.Politics.DataAccess;
@@ -93,7 +91,44 @@ public class CoordinatesDAO(ILogger<CoordinatesDAO> logger, PoliticsContext cont
             //Проброс исключения
             throw;
         }
+    }
 
+    /// <summary>
+    /// Метод добавление координаты
+    /// </summary>
+    /// <param cref="Polygon?" name="coordinates">Координаты</param>
+    /// <param cref="CoordinateTypePolitics?" name="type">Тип координаты</param>
+    /// <param cref="string" name="username">Логин пользователя, выполняющего действие</param>
+    /// <returns cref="long?">Идентификатор записи</returns>
+    /// <exception cref="Exception">Исключение</exception>
+    public async Task<long?> Add(Polygon? coordinates, CoordinateTypePolitics? type, string username)
+    {
+        try
+        {
+            //Логгирование
+            _logger.LogInformation(InformationMessages.EnteredAddCoordinateMethod);
+
+            //Проверки
+            if (coordinates == null) throw new Exception(ErrorMessagesShared.EmptyCoordinates);
+            if (type == null) throw new Exception(ErrorMessagesPolitics.NotFoundCoordinateType);
+            if (type.DateDeleted != null) throw new Exception(ErrorMessagesPolitics.DeletedCoordinateType);
+
+            //Запись данных в бд
+            CoordinatePolitics entity = new(username, false, coordinates, type);
+            _context.Add(entity);
+            await _context.SaveChangesAsync();
+
+            //Возврат результата
+            return entity.Id;
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text}: {error}", ErrorMessagesShared.Error, ex.Message);
+
+            //Проброс исключения
+            throw;
+        }
     }
 
     /// <summary>
