@@ -22,4 +22,5 @@ public static class InformationMessages
     public const string EnteredGetListOrganizationsTypesMethod = "Вошли в метод получения списка типов организаций";
     public const string EnteredRestoreCoordinateMethod = "Вошли в метод восстановления координаты";
     public const string EnteredRestoreCountryCoordinateMethod = "Вошли в метод восстановления координаты страны";
+    public const string EnteredUpgradeCountryCoordinateMethod = "Вошли в метод актуализации координаты страны";
 }

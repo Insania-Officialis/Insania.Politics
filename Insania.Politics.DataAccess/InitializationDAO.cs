@@ -211,6 +211,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                         ["21", "Союз Иль-Ладро", "2", "", ""],
                         ["22", "Мергерская Уния", "2", "", ""],
                         ["10000", "Удалённая", "1", "", DateTime.UtcNow.ToString()],
+                        ["10001", "Тестовая", "2", "", ""],
                     ];
 
                     //Проход по коллекции ключей
@@ -292,7 +293,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                         ["20", "Волар", "Волар - ", "Эсперанто", "#32217A", "20", ""],
                         ["21", "Союз Иль-Ладро", "Союз Иль-Ладро - ", "Итальянский", "#35513B", "21", ""],
                         ["22", "Мергерская Уния", "Мергерская Уния - ", "Латынь", "#BC3CB4", "22", ""],
-                        ["10000", "Удалённая", "", "", "", "10000", DateTime.UtcNow.ToString()]
+                        ["10000", "Удалённая", "", "", "", "10000", DateTime.UtcNow.ToString()],
+                        ["10001", "Тестовая", "", "", "#000001", "10001", ""],
                     ];
 
                     //Проход по коллекции ключей
@@ -538,6 +540,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                         ["40", "42", "9", ""],
                         ["41", "43", "9", ""],
                         ["10000", "1", "10000", DateTime.UtcNow.ToString()],
+                        ["10001", "2", "10001", DateTime.UtcNow.ToString()],
+                        ["10002", "3", "10001", DateTime.UtcNow.ToString()],
                     ];
 
                     //Проход по коллекции ключей
