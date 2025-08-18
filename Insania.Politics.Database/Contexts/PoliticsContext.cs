@@ -60,6 +60,21 @@ public class PoliticsContext : DbContext
     /// Координаты стран
     /// </summary>
     public virtual DbSet<CountryCoordinate> CountriesCoordinates { get; set; }
+
+    /// <summary>
+    /// Регионы
+    /// </summary>
+    public virtual DbSet<Region> Regions { get; set; }
+
+    /// <summary>
+    /// Владения
+    /// </summary>
+    public virtual DbSet<Domain> Domains { get; set; }
+
+    /// <summary>
+    /// Области
+    /// </summary>
+    public virtual DbSet<District> Districts { get; set; }
     #endregion
 
     #region Методы
@@ -123,6 +138,24 @@ public class PoliticsContext : DbContext
             .HasOne(x => x.CoordinateEntity)
             .WithMany()
             .HasForeignKey(x => x.CoordinateId);
+
+        //Создание ограничения уникальности на псевдоним региона
+        modelBuilder.Entity<Region>().HasAlternateKey(x => x.Alias);
+
+        //Создание ограничения уникальности на цвет региона на карте
+        modelBuilder.Entity<Region>().HasAlternateKey(x => x.Color);
+
+        //Создание ограничения уникальности на псевдоним владения
+        modelBuilder.Entity<Domain>().HasAlternateKey(x => x.Alias);
+
+        //Создание ограничения уникальности на цвет владения на карте
+        modelBuilder.Entity<Domain>().HasAlternateKey(x => x.Color);
+
+        //Создание ограничения уникальности на псевдоним области
+        modelBuilder.Entity<District>().HasAlternateKey(x => x.Alias);
+
+        //Создание ограничения уникальности на цвет области на карте
+        modelBuilder.Entity<District>().HasAlternateKey(x => x.Color);
     }
     #endregion
 }
