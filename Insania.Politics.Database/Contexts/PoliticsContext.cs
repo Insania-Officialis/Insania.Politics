@@ -74,7 +74,12 @@ public class PoliticsContext : DbContext
     /// <summary>
     /// Области
     /// </summary>
-    public virtual DbSet<District> Districts { get; set; }
+    public virtual DbSet<Area> Areas { get; set; }
+
+    /// <summary>
+    /// Населённые пункты
+    /// </summary>
+    public virtual DbSet<Locality> Localities { get; set; }
     #endregion
 
     #region Методы
@@ -152,10 +157,13 @@ public class PoliticsContext : DbContext
         modelBuilder.Entity<Domain>().HasAlternateKey(x => x.Color);
 
         //Создание ограничения уникальности на псевдоним области
-        modelBuilder.Entity<District>().HasAlternateKey(x => x.Alias);
+        modelBuilder.Entity<Area>().HasAlternateKey(x => x.Alias);
 
         //Создание ограничения уникальности на цвет области на карте
-        modelBuilder.Entity<District>().HasAlternateKey(x => x.Color);
+        modelBuilder.Entity<Area>().HasAlternateKey(x => x.Color);
+
+        //Создание ограничения уникальности на псевдоним населённого пункта
+        modelBuilder.Entity<Locality>().HasAlternateKey(x => x.Alias);
     }
     #endregion
 }

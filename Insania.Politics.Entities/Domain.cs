@@ -22,6 +22,7 @@ public class Domain : Compendium
     {
         Description = string.Empty;
         Color = string.Empty;
+        OrganizationEntity = new();
     }
 
     /// <summary>
@@ -32,11 +33,14 @@ public class Domain : Compendium
     /// <param cref="string" name="name">Наименование</param>
     /// <param cref="string" name="description">Описание</param>
     /// <param cref="string" name="color">Цвет на карте</param>
+    /// <param cref="Organization" name="organization">Организация</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public Domain(ITransliterationSL transliteration, string username, string name, string description, string color, DateTime? dateDeleted = null) : base(transliteration, username, name, dateDeleted)
+    public Domain(ITransliterationSL transliteration, string username, string name, string description, string color, Organization organization, DateTime? dateDeleted = null) : base(transliteration, username, name, dateDeleted)
     {
         Description = description;
         Color = color;
+        OrganizationId = organization.Id;
+        OrganizationEntity = organization;
     }
 
     /// <summary>
@@ -48,11 +52,14 @@ public class Domain : Compendium
     /// <param cref="string" name="name">Наименование</param>
     /// <param cref="string" name="description">Описание</param>
     /// <param cref="string" name="color">Цвет на карте</param>
+    /// <param cref="Organization" name="organization">Организация</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public Domain(ITransliterationSL transliteration, long id, string username, string name, string description, string color, DateTime? dateDeleted = null) : base(transliteration, id, username, name, dateDeleted)
+    public Domain(ITransliterationSL transliteration, long id, string username, string name, string description, string color, Organization organization, DateTime? dateDeleted = null) : base(transliteration, id, username, name, dateDeleted)
     {
         Description = description;
         Color = color;
+        OrganizationId = organization.Id;
+        OrganizationEntity = organization;
     }
     #endregion
 
@@ -70,6 +77,21 @@ public class Domain : Compendium
     [Column("color")]
     [Comment("Цвет на карте")]
     public string Color { get; private set; }
+
+    /// <summary>
+    ///	Идентификатор организации
+    /// </summary>
+    [Column("organization_id")]
+    [Comment("Идентификатор организации")]
+    public long OrganizationId { get; private set; }
+    #endregion
+
+    #region Навигационные свойства
+    /// <summary>
+    /// Навигационное свойство организации
+    /// </summary>
+    [ForeignKey("OrganizationId")]
+    public Organization OrganizationEntity { get; private set; }
     #endregion
 
     #region Методы
@@ -84,5 +106,15 @@ public class Domain : Compendium
     /// </summary>
     /// <param cref="string" name="color">Цвет на карте</param>
     public void SetColor(string color) => Color = color;
+
+    /// <summary>
+    /// Метод записи организации
+    /// </summary>
+    /// <param cref="Organization" name="organization">Организация</param>
+    public void SetOrganization(Organization organization)
+    {
+        OrganizationId = organization.Id;
+        OrganizationEntity = organization;
+    }
     #endregion
 }

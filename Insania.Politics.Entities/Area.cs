@@ -10,18 +10,20 @@ namespace Insania.Politics.Entities;
 /// <summary>
 /// Модель сущности области
 /// </summary>
-[Table("c_districts")]
+[Table("c_areas")]
 [Comment("Области")]
-public class District : Compendium
+public class Area : Compendium
 {
     #region Конструкторы
     /// <summary>
     /// Простой конструктор модели сущности области
     /// </summary>
-    public District() : base()
+    public Area() : base()
     {
         Description = string.Empty;
         Color = string.Empty;
+        CountryEntity = new();
+        RegionEntity = new();
     }
 
     /// <summary>
@@ -32,11 +34,17 @@ public class District : Compendium
     /// <param cref="string" name="name">Наименование</param>
     /// <param cref="string" name="description">Описание</param>
     /// <param cref="string" name="color">Цвет на карте</param>
+    /// <param cref="Country" name="country">Страна</param>
+    /// <param cref="Region" name="region">Регион</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public District(ITransliterationSL transliteration, string username, string name, string description, string color, DateTime? dateDeleted = null) : base(transliteration, username, name, dateDeleted)
+    public Area(ITransliterationSL transliteration, string username, string name, string description, string color, Country country, Region region, DateTime? dateDeleted = null) : base(transliteration, username, name, dateDeleted)
     {
         Description = description;
         Color = color;
+        CountryId = country.Id;
+        CountryEntity = country;
+        RegionId = region.Id;
+        RegionEntity = region;
     }
 
     /// <summary>
@@ -48,11 +56,17 @@ public class District : Compendium
     /// <param cref="string" name="name">Наименование</param>
     /// <param cref="string" name="description">Описание</param>
     /// <param cref="string" name="color">Цвет на карте</param>
+    /// <param cref="Country" name="country">Страна</param>
+    /// <param cref="Region" name="region">Регион</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public District(ITransliterationSL transliteration, long id, string username, string name, string description, string color, DateTime? dateDeleted = null) : base(transliteration, id, username, name, dateDeleted)
+    public Area(ITransliterationSL transliteration, long id, string username, string name, string description, string color, Country country, Region region, DateTime? dateDeleted = null) : base(transliteration, id, username, name, dateDeleted)
     {
         Description = description;
         Color = color;
+        CountryId = country.Id;
+        CountryEntity = country;
+        RegionId = region.Id;
+        RegionEntity = region;
     }
     #endregion
 
@@ -70,6 +84,34 @@ public class District : Compendium
     [Column("color")]
     [Comment("Цвет на карте")]
     public string Color { get; private set; }
+
+    /// <summary>
+    /// Идентификатор страны
+    /// </summary>
+    [Column("country_id")]
+    [Comment("Идентификатор страны")]
+    public long CountryId { get; private set; }
+
+    /// <summary>
+    /// Идентификатор региона
+    /// </summary>
+    [Column("region_id")]
+    [Comment("Идентификатор региона")]
+    public long RegionId { get; private set; }
+    #endregion
+
+    #region Навигационные свойства
+    /// <summary>
+    /// Навигационное свойство страны
+    /// </summary>
+    [ForeignKey("CountryId")]
+    public Country CountryEntity { get; private set; }
+
+    /// <summary>
+    /// Навигационное свойство региона
+    /// </summary>
+    [ForeignKey("RegionId")]
+    public Region RegionEntity { get; private set; }
     #endregion
 
     #region Методы
@@ -84,5 +126,25 @@ public class District : Compendium
     /// </summary>
     /// <param cref="string" name="color">Цвет на карте</param>
     public void SetColor(string color) => Color = color;
+
+    /// <summary>
+    /// Метод записи страны
+    /// </summary>
+    /// <param cref="Country" name="country">Страна</param>
+    public void SetCountry(Country country)
+    {
+        CountryId = country.Id;
+        CountryEntity = country;
+    }
+
+    /// <summary>
+    /// Метод записи региона
+    /// </summary>
+    /// <param cref="Region" name="region">Регион</param>
+    public void SetRegion(Region region)
+    {
+        RegionId = region.Id;
+        RegionEntity = region;
+    }
     #endregion
 }
