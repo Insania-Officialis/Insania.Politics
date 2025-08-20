@@ -144,6 +144,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                     [
                         new(_transliteration, 1, _username, "Удалённый", DateTime.UtcNow),
                         new(_transliteration, 2, _username, "Страны", null),
+                        new(_transliteration, 3, _username, "Дворянские дома", null),
                     ];
 
                     //Проход по коллекции сущностей
@@ -210,6 +211,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                         ["20", "Волар", "2", "", ""],
                         ["21", "Союз Иль-Ладро", "2", "", ""],
                         ["22", "Мергерская Уния", "2", "", ""],
+                        ["23", "Дом Сколбареров", "3", "", ""],
                         ["10000", "Удалённая", "1", "", DateTime.UtcNow.ToString()],
                         ["10001", "Тестовая", "2", "", ""],
                     ];
@@ -593,6 +595,227 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
 
                     //Создание шаблона файла скриптов
                     string pattern = @"^t_countries_coordinates_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Regions == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции сущностей
+                    List<Region> entities =
+                    [
+                        new(_transliteration, 1, _username, "Восточный Зимний архипелаг", "Восточный Зимний архипелаг - ", "#0004FF"),
+                        new(_transliteration, 10000, _username, "Удалённый", "", "#000000", DateTime.UtcNow),
+                    ];
+
+                    //Проход по коллекции сущностей
+                    foreach (var entity in entities)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.Regions.Any(x => x.Id == entity.Id)) await _politicsContext.Regions.AddAsync(entity);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_regions_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Domains == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "Владение дома Сколбареров", "Владения дома Сколбареров - ", "#7C6849", "23", ""],
+                        ["10000", "Удалённая", "", "#000000", "10000", DateTime.UtcNow.ToString()]
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.Domains.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            Organization organization = await _politicsContext.Organizations.FirstOrDefaultAsync(x => x.Id == long.Parse(key[4])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundOrganization);
+
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[5])) dateDeleted = DateTime.Parse(key[5]);
+                            Domain entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], key[3], organization, dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _politicsContext.Domains.AddAsync(entity);
+                        }
+                    }
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_domains_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Areas == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "Северный Восточный щит", "Северный Восточный щит - ", "#6B8599", "1", "1", ""],
+                        ["10000", "Удалённая", "", "#000000", "10000", "10000", DateTime.UtcNow.ToString()]
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.Areas.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            Country country = await _politicsContext.Countries.FirstOrDefaultAsync(x => x.Id == long.Parse(key[4])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
+                            Region region = await _politicsContext.Regions.FirstOrDefaultAsync(x => x.Id == long.Parse(key[5])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundRegion);
+
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[6])) dateDeleted = DateTime.Parse(key[6]);
+                            Area entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], key[3], country, region, dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _politicsContext.Areas.AddAsync(entity);
+                        }
+                    }
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_areas_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Localities == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "Сколбарербург", "Сколбарербург - ", "1", ""],
+                        ["10000", "Удалённая", "", "10000", DateTime.UtcNow.ToString()]
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.Localities.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Получение сущностей
+                            Area area = await _politicsContext.Areas.FirstOrDefaultAsync(x => x.Id == long.Parse(key[3])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundArea);
+
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[4])) dateDeleted = DateTime.Parse(key[4]);
+                            Locality entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], area, dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _politicsContext.Localities.AddAsync(entity);
+                        }
+                    }
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_localities_\d+.sql";
 
                     //Проходим по всем скриптам
                     foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))

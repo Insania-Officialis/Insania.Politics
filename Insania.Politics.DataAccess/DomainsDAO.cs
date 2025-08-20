@@ -11,17 +11,17 @@ using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
 namespace Insania.Politics.DataAccess;
 
 /// <summary>
-/// Сервис работы с данными организаций
+/// Сервис работы с данными владений
 /// </summary>
-/// <param cref="ILogger{OrganizationsDAO}" name="logger">Сервис логгирования</param>
+/// <param cref="ILogger{DomainsDAO}" name="logger">Сервис логгирования</param>
 /// <param cref="PoliticsContext" name="context">Контекст базы данных политики</param>
-public class OrganizationsDAO(ILogger<OrganizationsDAO> logger, PoliticsContext context) : IOrganizationsDAO
+public class DomainsDAO(ILogger<DomainsDAO> logger, PoliticsContext context) : IDomainsDAO
 {
     #region Зависимости
     /// <summary>
     /// Сервис логгирования
     /// </summary>
-    private readonly ILogger<OrganizationsDAO> _logger = logger;
+    private readonly ILogger<DomainsDAO> _logger = logger;
 
     /// <summary>
     /// Контекст базы данных политики
@@ -31,19 +31,19 @@ public class OrganizationsDAO(ILogger<OrganizationsDAO> logger, PoliticsContext 
 
     #region Методы
     /// <summary>
-    /// Метод получения списка организаций
+    /// Метод получения списка владений
     /// </summary>
-    /// <returns cref="List{Organization}">Список организаций</returns>
+    /// <returns cref="List{Domain}">Список владений</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<Organization>> GetList()
+    public async Task<List<Domain>> GetList()
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListOrganizationsMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetListDomainsMethod);
 
             //Получение данных из бд
-            List<Organization> data = await _context.Organizations.Where(x => x.DateDeleted == null).ToListAsync();
+            List<Domain> data = await _context.Domains.Where(x => x.DateDeleted == null).ToListAsync();
 
             //Возврат результата
             return data;
@@ -56,7 +56,6 @@ public class OrganizationsDAO(ILogger<OrganizationsDAO> logger, PoliticsContext 
             //Проброс исключения
             throw;
         }
-
     }
     #endregion
 }

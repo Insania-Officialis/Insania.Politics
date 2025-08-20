@@ -11,17 +11,17 @@ using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
 namespace Insania.Politics.DataAccess;
 
 /// <summary>
-/// Сервис работы с данными организаций
+/// Сервис работы с данными населённых пунктов
 /// </summary>
-/// <param cref="ILogger{OrganizationsDAO}" name="logger">Сервис логгирования</param>
+/// <param cref="ILogger{LocalitiesDAO}" name="logger">Сервис логгирования</param>
 /// <param cref="PoliticsContext" name="context">Контекст базы данных политики</param>
-public class OrganizationsDAO(ILogger<OrganizationsDAO> logger, PoliticsContext context) : IOrganizationsDAO
+public class LocalitiesDAO(ILogger<LocalitiesDAO> logger, PoliticsContext context) : ILocalitiesDAO
 {
     #region Зависимости
     /// <summary>
     /// Сервис логгирования
     /// </summary>
-    private readonly ILogger<OrganizationsDAO> _logger = logger;
+    private readonly ILogger<LocalitiesDAO> _logger = logger;
 
     /// <summary>
     /// Контекст базы данных политики
@@ -31,19 +31,19 @@ public class OrganizationsDAO(ILogger<OrganizationsDAO> logger, PoliticsContext 
 
     #region Методы
     /// <summary>
-    /// Метод получения списка организаций
+    /// Метод получения списка населённых пунктов
     /// </summary>
-    /// <returns cref="List{Organization}">Список организаций</returns>
+    /// <returns cref="List{Locality}">Список населённых пунктов</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<Organization>> GetList()
+    public async Task<List<Locality>> GetList()
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListOrganizationsMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetListLocalitiesMethod);
 
             //Получение данных из бд
-            List<Organization> data = await _context.Organizations.Where(x => x.DateDeleted == null).ToListAsync();
+            List<Locality> data = await _context.Localities.Where(x => x.DateDeleted == null).ToListAsync();
 
             //Возврат результата
             return data;

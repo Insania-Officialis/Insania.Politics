@@ -22,5 +22,9 @@ public static class Extension
             .AddScoped<ICoordinatesTypesDAO, CoordinatesTypesDAO>() //сервис работы с данными типов координат
             .AddScoped<ICoordinatesDAO, CoordinatesDAO>() //сервис работы с данными координат
             .AddScoped<ICountriesCoordinatesDAO, CountriesCoordinatesDAO>() //сервис работы с данными координат стран
+            .AddScoped<IRegionsDAO, RegionsDAO>() //сервис работы с данными регионов
+            .AddScoped<IDomainsDAO, DomainsDAO>() //сервис работы с данными владений
+            .AddScoped<IAreasDAO, AreasDAO>() //сервис работы с данными областей
+            .AddScoped<ILocalitiesDAO, LocalitiesDAO>() //сервис работы с данными населённых пунктов
         ;
 }

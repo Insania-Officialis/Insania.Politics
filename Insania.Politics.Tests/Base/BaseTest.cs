@@ -34,8 +34,8 @@ public abstract class BaseTest
         //Создание коллекции ключей конфигурации
         Dictionary<string, string> configurationKeys = new()
         {
-           {"LoggingOptions:FilePath", "G:\\Program\\Insania\\Logs\\Politics.Tests\\log.txt"},
-           {"InitializationDataSettings:ScriptsPath", "G:\\Program\\Insania\\Insania.Politics\\Insania.Politics.Database\\Scripts"},
+           {"LoggingOptions:FilePath", "E:\\Program\\Insania\\Logs\\Politics.Tests\\log.txt"},
+           {"InitializationDataSettings:ScriptsPath", "E:\\Program\\Insania\\Insania.Politics\\Insania.Politics.Database\\Scripts"},
            {"InitializationDataSettings:InitStructure", "false"},
            {"InitializationDataSettings:Tables:OrganizationsTypes", "true"},
            {"InitializationDataSettings:Tables:Organizations", "true"},
@@ -43,6 +43,10 @@ public abstract class BaseTest
            {"InitializationDataSettings:Tables:CoordinatesTypes", "true"},
            {"InitializationDataSettings:Tables:Coordinates", "true"},
            {"InitializationDataSettings:Tables:CountriesCoordinates", "true"},
+           {"InitializationDataSettings:Tables:Regions", "true"},
+           {"InitializationDataSettings:Tables:Domains", "true"},
+           {"InitializationDataSettings:Tables:Areas", "true"},
+           {"InitializationDataSettings:Tables:Localities", "true"},
            {"TokenSettings:Issuer", "Politics.Test"},
            {"TokenSettings:Audience", "Politics.Test"},
            {"TokenSettings:Key", "This key is generated for tests in the user zone"},

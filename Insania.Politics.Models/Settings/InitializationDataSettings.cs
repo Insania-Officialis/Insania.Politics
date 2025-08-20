@@ -63,6 +63,26 @@ public class InitializationDataSettingsIncludeTables
     /// Координаты стран
     /// </summary>
     public bool? CountriesCoordinates { get; set; }
+
+    /// <summary>
+    /// Регионы
+    /// </summary>
+    public bool? Regions { get; set; }
+
+    /// <summary>
+    /// Владения
+    /// </summary>
+    public bool? Domains { get; set; }
+
+    /// <summary>
+    /// Области
+    /// </summary>
+    public bool? Areas { get; set; }
+
+    /// <summary>
+    /// Населённые пункты
+    /// </summary>
+    public bool? Localities { get; set; }
 }
 
 /// <summary>

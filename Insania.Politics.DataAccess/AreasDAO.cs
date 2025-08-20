@@ -11,17 +11,17 @@ using ErrorMessages = Insania.Shared.Messages.ErrorMessages;
 namespace Insania.Politics.DataAccess;
 
 /// <summary>
-/// Сервис работы с данными организаций
+/// Сервис работы с данными областей
 /// </summary>
-/// <param cref="ILogger{OrganizationsDAO}" name="logger">Сервис логгирования</param>
+/// <param cref="ILogger{AreasDAO}" name="logger">Сервис логгирования</param>
 /// <param cref="PoliticsContext" name="context">Контекст базы данных политики</param>
-public class OrganizationsDAO(ILogger<OrganizationsDAO> logger, PoliticsContext context) : IOrganizationsDAO
+public class AreasDAO(ILogger<AreasDAO> logger, PoliticsContext context) : IAreasDAO
 {
     #region Зависимости
     /// <summary>
     /// Сервис логгирования
     /// </summary>
-    private readonly ILogger<OrganizationsDAO> _logger = logger;
+    private readonly ILogger<AreasDAO> _logger = logger;
 
     /// <summary>
     /// Контекст базы данных политики
@@ -31,19 +31,19 @@ public class OrganizationsDAO(ILogger<OrganizationsDAO> logger, PoliticsContext 
 
     #region Методы
     /// <summary>
-    /// Метод получения списка организаций
+    /// Метод получения списка областей
     /// </summary>
-    /// <returns cref="List{Organization}">Список организаций</returns>
+    /// <returns cref="List{Area}">Список областей</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<List<Organization>> GetList()
+    public async Task<List<Area>> GetList()
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListOrganizationsMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetListAreasMethod);
 
             //Получение данных из бд
-            List<Organization> data = await _context.Organizations.Where(x => x.DateDeleted == null).ToListAsync();
+            List<Area> data = await _context.Areas.Where(x => x.DateDeleted == null).ToListAsync();
 
             //Возврат результата
             return data;
