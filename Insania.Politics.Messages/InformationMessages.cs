@@ -21,6 +21,7 @@ public static class InformationMessages
     public const string EnteredGetListCountriesCoordinatesMethod = "Вошли в метод получения списка координат стран";
     public const string EnteredGetListDomainsMethod = "Вошли в метод получения списка владений";
     public const string EnteredGetListLocalitiesMethod = "Вошли в метод получения списка населённых пунктов";
+    public const string EnteredGetListLocalitiesLevelsMethod = "Вошли в метод получения списка уровней населённых пунктов";
     public const string EnteredGetListOrganizationsMethod = "Вошли в метод получения списка организаций";
     public const string EnteredGetListOrganizationsTypesMethod = "Вошли в метод получения списка типов организаций";
     public const string EnteredGetListRegionsMethod = "Вошли в метод получения списка регионов";

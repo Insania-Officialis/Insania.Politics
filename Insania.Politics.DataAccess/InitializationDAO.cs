@@ -690,7 +690,7 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                             //Создание сущности
                             DateTime? dateDeleted = null;
                             if (!string.IsNullOrWhiteSpace(key[5])) dateDeleted = DateTime.Parse(key[5]);
-                            Domain entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], key[3], organization, dateDeleted);
+                            Domain entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], key[3], organization, null, dateDeleted);
 
                             //Добавление сущности в бд
                             await _politicsContext.Domains.AddAsync(entity);
@@ -782,6 +782,72 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                     throw;
                 }
             }
+            if (_settings.Value.Tables?.LocalitiesLevels == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции ключей
+                    string[][] keys =
+                    [
+                        ["1", "Укрепление", "6", "8", ""],
+                        ["2", "Маленький посёлок", "8", "12", ""],
+                        ["3", "Посёлок", "12", "15", ""],
+                        ["4", "Замок", "15", "19", ""],
+                        ["5", "Большой посёлок", "19", "22", ""],
+                        ["6", "Маленький город", "22", "27", ""],
+                        ["7", "Крепость", "27", "30", ""],
+                        ["8", "Город", "30", "34", ""],
+                        ["9", "Большой город", "34", "39", ""],
+                        ["10", "Цитадель", "39", "42", ""],
+                        ["11", "Огромный город", "42", "46", ""],
+                        ["12", "Столица", "46", "51", ""],
+                        ["10000", "Удалённый", "0", "0", DateTime.UtcNow.ToString()]
+                    ];
+
+                    //Проход по коллекции ключей
+                    foreach (var key in keys)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.LocalitiesLevels.Any(x => x.Id == long.Parse(key[0])))
+                        {
+                            //Создание сущности
+                            DateTime? dateDeleted = null;
+                            if (!string.IsNullOrWhiteSpace(key[4])) dateDeleted = DateTime.Parse(key[4]);
+                            LocalityLevel entity = new(_transliteration, long.Parse(key[0]), _username, key[1], int.Parse(key[2]), int.Parse(key[3]), dateDeleted);
+
+                            //Добавление сущности в бд
+                            await _politicsContext.LocalitiesLevels.AddAsync(entity);
+                        }
+                    }
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_localities_levels_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
             if (_settings.Value.Tables?.Localities == true)
             {
                 //Открытие транзакции
@@ -792,8 +858,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                     //Создание коллекции ключей
                     string[][] keys =
                     [
-                        ["1", "Сколбарербург", "Сколбарербург - ", "1", ""],
-                        ["10000", "Удалённая", "", "10000", DateTime.UtcNow.ToString()]
+                        ["1", "Сколбарербург", "Сколбарербург - ", "1", "10", ""],
+                        ["10000", "Удалённая", "", "10000", "10000", DateTime.UtcNow.ToString()]
                     ];
 
                     //Проход по коллекции ключей
@@ -804,11 +870,12 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                         {
                             //Получение сущностей
                             Area area = await _politicsContext.Areas.FirstOrDefaultAsync(x => x.Id == long.Parse(key[3])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundArea);
+                            LocalityLevel localityLevel = await _politicsContext.LocalitiesLevels.FirstOrDefaultAsync(x => x.Id == long.Parse(key[4])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundLocalityLevel);
 
                             //Создание сущности
                             DateTime? dateDeleted = null;
-                            if (!string.IsNullOrWhiteSpace(key[4])) dateDeleted = DateTime.Parse(key[4]);
-                            Locality entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], area, dateDeleted);
+                            if (!string.IsNullOrWhiteSpace(key[5])) dateDeleted = DateTime.Parse(key[5]);
+                            Locality entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], area, localityLevel, dateDeleted);
 
                             //Добавление сущности в бд
                             await _politicsContext.Localities.AddAsync(entity);

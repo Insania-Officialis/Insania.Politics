@@ -46,6 +46,7 @@ public abstract class BaseTest
            {"InitializationDataSettings:Tables:Regions", "true"},
            {"InitializationDataSettings:Tables:Domains", "true"},
            {"InitializationDataSettings:Tables:Areas", "true"},
+           {"InitializationDataSettings:Tables:LocalitiesLevels", "true"},
            {"InitializationDataSettings:Tables:Localities", "true"},
            {"TokenSettings:Issuer", "Politics.Test"},
            {"TokenSettings:Audience", "Politics.Test"},

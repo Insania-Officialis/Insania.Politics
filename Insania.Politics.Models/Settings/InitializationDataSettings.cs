@@ -80,6 +80,11 @@ public class InitializationDataSettingsIncludeTables
     public bool? Areas { get; set; }
 
     /// <summary>
+    /// Уровень населённых пунктов
+    /// </summary>
+    public bool? LocalitiesLevels { get; set; }
+
+    /// <summary>
     /// Населённые пункты
     /// </summary>
     public bool? Localities { get; set; }

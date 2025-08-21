@@ -77,6 +77,11 @@ public class PoliticsContext : DbContext
     public virtual DbSet<Area> Areas { get; set; }
 
     /// <summary>
+    /// Уровни населённых пунктов
+    /// </summary>
+    public virtual DbSet<LocalityLevel> LocalitiesLevels { get; set; }
+
+    /// <summary>
     /// Населённые пункты
     /// </summary>
     public virtual DbSet<Locality> Localities { get; set; }
@@ -164,6 +169,9 @@ public class PoliticsContext : DbContext
 
         //Создание ограничения уникальности на псевдоним населённого пункта
         modelBuilder.Entity<Locality>().HasAlternateKey(x => x.Alias);
+
+        //Создание ограничения уникальности на псевдоним уровня населённого пункта
+        modelBuilder.Entity<LocalityLevel>().HasAlternateKey(x => x.Alias);
     }
     #endregion
 }

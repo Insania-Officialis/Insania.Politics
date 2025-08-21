@@ -21,6 +21,7 @@ public static class ErrorMessages
     public const string NotFoundCountry = "Не найдена страна";
     public const string NotFoundCountryCoordinate = "Не найдена координата страны";
     public const string NotFoundDomain = "Не найдено владение";
+    public const string NotFoundLocalityLevel = "Не найден уровень населённого пункта";
     public const string NotFoundOrganization = "Не найдена организация";
     public const string NotFoundOrganizationType = "Не найден тип организации";
     public const string NotFoundRegion = "Не найден регион";
