@@ -732,8 +732,8 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                     //Создание коллекции ключей
                     string[][] keys =
                     [
-                        ["1", "Северный Восточный щит", "Северный Восточный щит - ", "#6B8599", "1", "1", ""],
-                        ["10000", "Удалённая", "", "#000000", "10000", "10000", DateTime.UtcNow.ToString()]
+                        ["1", "Северный Восточный щит", "Северный Восточный щит - ", "#6B8599", "1", "1", "1", ""],
+                        ["10000", "Удалённая", "", "#000000", "10000", "10000", "10000", DateTime.UtcNow.ToString()]
                     ];
 
                     //Проход по коллекции ключей
@@ -745,11 +745,12 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
                             //Получение сущностей
                             Country country = await _politicsContext.Countries.FirstOrDefaultAsync(x => x.Id == long.Parse(key[4])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
                             Region region = await _politicsContext.Regions.FirstOrDefaultAsync(x => x.Id == long.Parse(key[5])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundRegion);
+                            Domain domain = await _politicsContext.Domains.FirstOrDefaultAsync(x => x.Id == long.Parse(key[6])) ?? throw new Exception(ErrorMessagesPolitics.NotFoundDomain);
 
                             //Создание сущности
                             DateTime? dateDeleted = null;
-                            if (!string.IsNullOrWhiteSpace(key[6])) dateDeleted = DateTime.Parse(key[6]);
-                            Area entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], key[3], country, region, dateDeleted);
+                            if (!string.IsNullOrWhiteSpace(key[7])) dateDeleted = DateTime.Parse(key[7]);
+                            Area entity = new(_transliteration, long.Parse(key[0]), _username, key[1], key[2], key[3], country, region, domain, dateDeleted);
 
                             //Добавление сущности в бд
                             await _politicsContext.Areas.AddAsync(entity);

@@ -24,6 +24,7 @@ public class Area : Compendium
         Color = string.Empty;
         CountryEntity = new();
         RegionEntity = new();
+        DomainEntity = new();
     }
 
     /// <summary>
@@ -36,8 +37,9 @@ public class Area : Compendium
     /// <param cref="string" name="color">Цвет на карте</param>
     /// <param cref="Country" name="country">Страна</param>
     /// <param cref="Region" name="region">Регион</param>
+    /// <param cref="Domain" name="domain">Владение</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public Area(ITransliterationSL transliteration, string username, string name, string description, string color, Country country, Region region, DateTime? dateDeleted = null) : base(transliteration, username, name, dateDeleted)
+    public Area(ITransliterationSL transliteration, string username, string name, string description, string color, Country country, Region region, Domain domain, DateTime? dateDeleted = null) : base(transliteration, username, name, dateDeleted)
     {
         Description = description;
         Color = color;
@@ -45,6 +47,8 @@ public class Area : Compendium
         CountryEntity = country;
         RegionId = region.Id;
         RegionEntity = region;
+        DomainId = domain.Id;
+        DomainEntity = domain;
     }
 
     /// <summary>
@@ -58,8 +62,9 @@ public class Area : Compendium
     /// <param cref="string" name="color">Цвет на карте</param>
     /// <param cref="Country" name="country">Страна</param>
     /// <param cref="Region" name="region">Регион</param>
+    /// <param cref="Domain" name="domain">Владение</param>
     /// <param cref="DateTime?" name="dateDeleted">Дата удаления</param>
-    public Area(ITransliterationSL transliteration, long id, string username, string name, string description, string color, Country country, Region region, DateTime? dateDeleted = null) : base(transliteration, id, username, name, dateDeleted)
+    public Area(ITransliterationSL transliteration, long id, string username, string name, string description, string color, Country country, Region region, Domain domain, DateTime? dateDeleted = null) : base(transliteration, id, username, name, dateDeleted)
     {
         Description = description;
         Color = color;
@@ -67,6 +72,8 @@ public class Area : Compendium
         CountryEntity = country;
         RegionId = region.Id;
         RegionEntity = region;
+        DomainId = domain.Id;
+        DomainEntity = domain;
     }
     #endregion
 
@@ -98,6 +105,13 @@ public class Area : Compendium
     [Column("region_id")]
     [Comment("Идентификатор региона")]
     public long RegionId { get; private set; }
+
+    /// <summary>
+    /// Идентификатор владения
+    /// </summary>
+    [Column("domain_id")]
+    [Comment("Идентификатор владения")]
+    public long DomainId { get; private set; }
     #endregion
 
     #region Навигационные свойства
@@ -112,6 +126,12 @@ public class Area : Compendium
     /// </summary>
     [ForeignKey("RegionId")]
     public Region RegionEntity { get; private set; }
+
+    /// <summary>
+    /// Навигационное свойство владения
+    /// </summary>
+    [ForeignKey("DomainId")]
+    public Domain DomainEntity { get; private set; }
     #endregion
 
     #region Методы
@@ -145,6 +165,16 @@ public class Area : Compendium
     {
         RegionId = region.Id;
         RegionEntity = region;
+    }
+
+    /// <summary>
+    /// Метод записи владения
+    /// </summary>
+    /// <param cref="Domain" name="domain">Владение</param>
+    public void SetDomain(Domain domain)
+    {
+        DomainId = domain.Id;
+        DomainEntity = domain;
     }
     #endregion
 }
