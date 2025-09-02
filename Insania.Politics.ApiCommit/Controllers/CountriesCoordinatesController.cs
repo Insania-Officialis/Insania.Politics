@@ -32,7 +32,7 @@ public class CountriesCoordinatesController(ILogger<CountriesCoordinatesControll
 
     #region Методы
     /// <summary>
-    /// Метод получения списка координат стран
+    /// Метод актуализации координаты страны
     /// </summary>
     /// <param cref="CountriesCoordinatesUpgradeRequest" name="request">Модель запроса актуализации координаты географического объекта</param>
     /// <returns cref="OkResult">Список координат стран</returns>
