@@ -165,16 +165,17 @@ services
     });
 
 //Добавление параметров преобразования моделей
-services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<PoliticsMappingProfile>();
-});
+services.AddAutoMapper(cfg => { cfg.AddProfile<PoliticsMappingProfile>(); });
+
+//Регистрация списка исключений авторизации
+builder.Services.AddSingleton<List<string>>(
+[
+    "/swagger/v1/swagger.json",
+    "/swagger",
+]);
 
 //Построение веб-приложения
 WebApplication app = builder.Build();
-
-//Добавление параметров конвейера запросов
-app.UseMiddleware<LoggingMiddleware>();
 
 //Подключение маршрутизации
 app.UseRouting();
@@ -184,6 +185,10 @@ app.UseAuthentication();
 
 //Подключение авторизации
 app.UseAuthorization();
+
+//Добавление конвееров запросов
+app.UseMiddleware<Insania.Shared.Middleware.AuthorizationMiddleware>(); //авторизация
+app.UseMiddleware<LoggingMiddleware>(); //логгирование
 
 //Подключение сваггера
 app.UseSwagger();

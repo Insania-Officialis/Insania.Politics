@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using Insania.Shared.Messages;
 using Insania.Shared.Models.Responses.Base;
@@ -14,7 +13,6 @@ namespace Insania.Politics.ApiCommit.Controllers;
 /// </summary>
 /// <param cref="ILogger" name="logger">Сервис логгирования</param>
 /// <param cref="ICountriesCoordinatesBL" name="countriesCoordinatesBL">Сервис работы с бизнес-логикой координат стран</param>
-[Authorize]
 [Route("countries_coordinates")]
 public class CountriesCoordinatesController(ILogger<CountriesCoordinatesController> logger, ICountriesCoordinatesBL countriesCoordinatesBL) : Controller
 {
