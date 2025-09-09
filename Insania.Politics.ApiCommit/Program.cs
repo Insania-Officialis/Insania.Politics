@@ -173,8 +173,7 @@ services.AddAutoMapper(cfg => cfg.AddProfile<PoliticsMappingProfile>());
 //Регистрация списка исключений авторизации
 builder.Services.AddSingleton<List<string>>(
 [
-    "/swagger/v1/swagger.json",
-    "/swagger",
+
 ]);
 
 //Построение веб-приложения
@@ -190,8 +189,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 //Добавление конвееров запросов
-app.UseMiddleware<Insania.Shared.Middleware.AuthorizationMiddleware>(); //авторизация
 app.UseMiddleware<LoggingMiddleware>(); //логгирование
+app.UseMiddleware<Insania.Shared.Middleware.AuthorizationMiddleware>(); //авторизация
 
 //Подключение сваггера
 app.UseSwagger();
