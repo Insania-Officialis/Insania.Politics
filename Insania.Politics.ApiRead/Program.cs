@@ -149,7 +149,7 @@ services.AddCors(options =>
         .AllowCredentials()
     );
 
-    options.DefaultPolicyName = "BadPolicy";
+    options.DefaultPolicyName = "CorsPolicy";
 });
 
 //Добавление контроллеров
@@ -197,7 +197,7 @@ app.UseSwaggerUI(options =>
 });
 
 //Подключение корсов
-app.UseCors();
+app.UseCors("CorsPolicy");
 
 //Подключение маршрутизации контроллеров
 app.MapControllers();
