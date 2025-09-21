@@ -17,7 +17,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 #Копирование файлов в контейнер
-COPY ["Insania.Politics", ""]
+COPY [".", ""]
 
 #Восстановление проекта
 RUN dotnet restore "./Insania.Politics.ApiRead/Insania.Politics.ApiRead.csproj"
