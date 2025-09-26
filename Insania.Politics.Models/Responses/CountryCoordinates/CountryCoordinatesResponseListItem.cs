@@ -1,14 +1,14 @@
-﻿namespace Insania.Politics.Models.Responses.CountriesCoordinates;
+﻿namespace Insania.Politics.Models.Responses.CountryCoordinates;
 
 /// <summary>
-/// Модель элемента ответа списком координат стран
+/// Модель элемента ответа списком координат страны
 /// </summary>
 /// <param cref="long?" name="id">Идентификатор координаты страны</param>
 /// <param cref="long?" name="coordinateId">Идентификатор координаты</param>
 /// <param cref="double[][][]?" name="coordinates">Координаты</param>
 /// <param cref="string?" name="backgroundColor">Цвет фона</param>
 /// <param cref="string?" name="borderColor">Цвет границ</param>
-public class CountriesCoordinatesResponseListItem(long? id = null, long? coordinateId = null, double[][][]? coordinates = null, string? backgroundColor = null, string? borderColor = null)
+public class CountryCoordinatesResponseListItem(long? id = null, long? coordinateId = null, double[][][]? coordinates = null, string? backgroundColor = null, string? borderColor = null)
 {
     #region Поля
     /// <summary>

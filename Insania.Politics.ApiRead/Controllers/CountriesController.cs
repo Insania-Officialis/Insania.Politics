@@ -40,8 +40,35 @@ public class CountriesController(ILogger<CountriesController> logger, ICountries
     {
         try
         {
-            //Получение результата проверки логина
+            //Получение результата
             BaseResponse? result = await _countriesBL.GetList(has_coordinates);
+
+            //Возврат ответа
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            //Логгирование
+            _logger.LogError("{text} {ex}", ErrorMessages.Error, ex);
+
+            //Возврат ошибки
+            return BadRequest(new BaseResponseError(ex.Message));
+        }
+    }
+
+    /// <summary>
+    /// Метод получения списка стран с координатами
+    /// </summary>
+    /// <returns cref="OkResult">Список стран с координатами</returns>
+    /// <returns cref="BadRequestResult">Ошибка</returns>
+    [HttpGet]
+    [Route("list_with_coordinates")]
+    public async Task<IActionResult> GetListWithCoordinates()
+    {
+        try
+        {
+            //Получение результата
+            BaseResponse? result = await _countriesBL.GetListWithCoordinates();
 
             //Возврат ответа
             return Ok(result);

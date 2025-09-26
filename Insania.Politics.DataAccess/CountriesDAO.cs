@@ -81,17 +81,12 @@ public class CountriesDAO(ILogger<CountriesDAO> logger, PoliticsContext context)
 
             //Формирование запроса
             IQueryable<Country> query = _context.Countries.Where(x => x.DateDeleted == null);
-            if (hasCoordinates.HasValue) 
+            if (hasCoordinates.HasValue)
             {
-                query = query
-                    .Include(x => x.CountryCoordinates)
-                    .Where(x => (hasCoordinates ?? false)
-                        ? x.CountryCoordinates != null &&
-                          x.CountryCoordinates.Any(y => y.DateDeleted == null)
-                        : x.CountryCoordinates == null ||
-                          !x.CountryCoordinates.Any(y => y.DateDeleted == null)
-                    );
+                if (hasCoordinates.Value) query = query.Where(x => x.CountryCoordinates!.Any(y => y.DateDeleted == null));
+                else query = query.Where(x => !x.CountryCoordinates!.Any(y => y.DateDeleted == null));
             }
+            if (hasCoordinates == true) query = query.Include(x => x.CountryCoordinates!.Where(y => y.DateDeleted == null)).ThenInclude(y => y.CoordinateEntity).ThenInclude(z => z!.TypeEntity);
 
             //Получение данных из бд
             List<Country> data = await query.ToListAsync();

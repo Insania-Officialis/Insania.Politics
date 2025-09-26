@@ -4,7 +4,7 @@ using Insania.Shared.Messages;
 using Insania.Shared.Models.Responses.Base;
 
 using Insania.Politics.Contracts.BusinessLogic;
-using Insania.Politics.Models.Responses.CountriesCoordinates;
+using Insania.Politics.Models.Responses.CountryCoordinates;
 
 namespace Insania.Politics.ApiRead.Controllers;
 
@@ -30,19 +30,19 @@ public class CountriesCoordinatesController(ILogger<CountriesCoordinatesControll
 
     #region Методы
     /// <summary>
-    /// Метод получения списка координат стран
+    /// Метод получения списка координат страны по идентификатору страны
     /// </summary>
     /// <param cref="long" name="country_id">Идентификатор страны</param>
     /// <returns cref="OkResult">Список координат стран</returns>
     /// <returns cref="BadRequestResult">Ошибка</returns>
     [HttpGet]
-    [Route("list")]
+    [Route("by_country_id")]
     public async Task<IActionResult> GetList([FromQuery] long? country_id)
     {
         try
         {
             //Получение результата
-            CountriesCoordinatesResponseList? result = await _countriesCoordinatesBL.GetList(country_id);
+            CountryCoordinatesResponseList? result = await _countriesCoordinatesBL.GetByCountryId(country_id);
 
             //Возврат ответа
             return Ok(result);

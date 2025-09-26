@@ -1,7 +1,7 @@
 ﻿using Insania.Shared.Models.Responses.Base;
 
 using Insania.Politics.Models.Requests.CountriesCoordinates;
-using Insania.Politics.Models.Responses.CountriesCoordinates;
+using Insania.Politics.Models.Responses.CountryCoordinates;
 
 namespace Insania.Politics.Contracts.BusinessLogic;
 
@@ -11,12 +11,12 @@ namespace Insania.Politics.Contracts.BusinessLogic;
 public interface ICountriesCoordinatesBL
 {
     /// <summary>
-    /// Метод получения списка координат стран по идентификатору страны
+    /// Метод получения списка координат страны по идентификатору страны
     /// </summary>
     /// <param cref="long?" name="countryId">Идентификатор страны</param>
-    /// <returns cref="CountriesCoordinatesResponseList">Список координат стран</returns>
+    /// <returns cref="CountryCoordinatesResponseList">Список координат стран</returns>
     /// <exception cref="Exception">Исключение</exception>
-    Task<CountriesCoordinatesResponseList> GetList(long? countryId);
+    Task<CountryCoordinatesResponseList> GetByCountryId(long? countryId);
 
     /// <summary>
     /// Метод актуализации координаты страны

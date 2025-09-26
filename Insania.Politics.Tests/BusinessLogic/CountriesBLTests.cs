@@ -3,6 +3,7 @@
 using Insania.Shared.Models.Responses.Base;
 
 using Insania.Politics.Contracts.BusinessLogic;
+using Insania.Politics.Models.Responses.Countries;
 using Insania.Politics.Tests.Base;
 
 namespace Insania.Politics.Tests.BusinessLogic;
@@ -86,6 +87,46 @@ public class CountriesBLTests : BaseTest
             Assert.That(result.Success, Is.True);
             Assert.That(result.Items, Is.Not.Null);
             Assert.That(result.Items, Is.Not.Empty);
+        }
+        catch (Exception)
+        {
+            //Проброс исключения
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Тест метода получения списка стран с координатами
+    /// </summary>
+    [Test]
+    public async Task GetListWithCoordinatesTest()
+    {
+        try
+        {
+            //Получение результата
+            CountriesWithCoordinatesResponseList? result = await CountriesBL.GetListWithCoordinates();
+
+            //Проверка результата
+            Assert.That(result, Is.Not.Null);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(result.Success, Is.True);
+                Assert.That(result.Items, Is.Not.Null);
+            }
+            Assert.That(result.Items, Is.Not.Empty);
+            foreach (var item in result.Items)
+            {
+                Assert.That(item, Is.Not.Null);
+                using (Assert.EnterMultipleScope())
+                {
+                    Assert.That(item.Id, Is.Not.Null);
+                    Assert.That(item.Name, Is.Not.Null);
+                    Assert.That(item.Center, Is.Not.Null);
+                    Assert.That(item.Zoom, Is.Not.Null);
+                    Assert.That(item.Coordinates, Is.Not.Null);
+                    Assert.That(item.Coordinates, Is.Not.Empty);
+                }
+            }
         }
         catch (Exception)
         {

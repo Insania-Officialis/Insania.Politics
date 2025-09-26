@@ -9,6 +9,7 @@ public static class InformationMessages
     public const string EnteredAddCountryCoordinateMethod = "Вошли в метод добавления координаты страны";
     public const string EnteredCloseCoordinateMethod = "Вошли в метод закрытия координаты";
     public const string EnteredCloseCountryCoordinateMethod = "Вошли в метод закрытия координаты страны";
+    public const string EnteredGetByCountryIdCountryCoordinatesMethod = "Вошли в метод получения списка координат страны по координате страны";
     public const string EnteredGetByIdCoordinateMethod = "Вошли в метод получения координаты по идентификатору";
     public const string EnteredGetByIdCoordinateTypeMethod = "Вошли в метод получения типа координаты по идентификатору";
     public const string EnteredGetByIdCountryMethod = "Вошли в метод получения страны по идентификатору";

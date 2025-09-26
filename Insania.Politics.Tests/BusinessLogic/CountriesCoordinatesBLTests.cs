@@ -9,7 +9,7 @@ using Insania.Politics.Contracts.BusinessLogic;
 using Insania.Politics.Contracts.DataAccess;
 using Insania.Politics.Entities;
 using Insania.Politics.Models.Requests.CountriesCoordinates;
-using Insania.Politics.Models.Responses.CountriesCoordinates;
+using Insania.Politics.Models.Responses.CountryCoordinates;
 using Insania.Politics.Tests.Base;
 
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
@@ -73,19 +73,19 @@ public class CountriesCoordinatesBLTests : BaseTest
 
     #region Методы тестирования
     /// <summary>
-    /// Тест метода получения списка координат стран по идентификатору страны
+    /// Тест метода получения списка координат страны по идентификатору страны
     /// </summary>
     /// <param cref="long?" name="countryId">Идентификатор страны</param>
     [TestCase(null)]
     [TestCase(-1)]
     [TestCase(10000)]
     [TestCase(1)]
-    public async Task GetListTest(long? countryId)
+    public async Task GetByCountryIdTest(long? countryId)
     {
         try
         {
             //Получение результата
-            CountriesCoordinatesResponseList? result = await CountriesCoordinatesBL.GetList(countryId);
+            CountryCoordinatesResponseList? result = await CountriesCoordinatesBL.GetByCountryId(countryId);
 
             //Проверка результата
             Assert.That(result, Is.Not.Null);

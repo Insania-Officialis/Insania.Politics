@@ -12,7 +12,7 @@ using Insania.Politics.Contracts.BusinessLogic;
 using Insania.Politics.Contracts.DataAccess;
 using Insania.Politics.Entities;
 using Insania.Politics.Models.Requests.CountriesCoordinates;
-using Insania.Politics.Models.Responses.CountriesCoordinates;
+using Insania.Politics.Models.Responses.CountryCoordinates;
 
 using ErrorMessagesShared = Insania.Shared.Messages.ErrorMessages;
 
@@ -66,17 +66,17 @@ public class CountriesCoordinatesBL(ILogger<CountriesCoordinatesBL> logger, IMap
 
     #region Методы
     /// <summary>
-    /// Метод получения списка координат стран по идентификатору страны
+    /// Метод получения списка координат страны по идентификатору страны
     /// </summary>
-    /// <param cref="long?" name="сщгтекнId">Идентификатор страны</param>
-    /// <returns cref="CountriesCoordinatesResponseList">Список координат стран</returns>
+    /// <param cref="long?" name="countryId">Идентификатор страны</param>
+    /// <returns cref="CountryCoordinatesResponseList">Список координат стран</returns>
     /// <exception cref="Exception">Исключение</exception>
-    public async Task<CountriesCoordinatesResponseList> GetList(long? countryId)
+    public async Task<CountryCoordinatesResponseList> GetByCountryId(long? countryId)
     {
         try
         {
             //Логгирование
-            _logger.LogInformation(InformationMessages.EnteredGetListCountriesCoordinatesMethod);
+            _logger.LogInformation(InformationMessages.EnteredGetByCountryIdCountryCoordinatesMethod);
 
             //Проверки
             if (countryId == null) throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
@@ -89,7 +89,7 @@ public class CountriesCoordinatesBL(ILogger<CountriesCoordinatesBL> logger, IMap
             Country country = countryCoordinate.CountryEntity ?? throw new Exception(ErrorMessagesPolitics.NotFoundCountry);
 
             //Формирование ответа
-            CountriesCoordinatesResponseList? response = null;
+            CountryCoordinatesResponseList? response = null;
             if (data == null) response = new(false);
             else
             {
@@ -100,7 +100,7 @@ public class CountriesCoordinatesBL(ILogger<CountriesCoordinatesBL> logger, IMap
                     country.Name,
                     countryCoordinate.Center,
                     countryCoordinate.Zoom,
-                    data?.Select(x => new CountriesCoordinatesResponseListItem(
+                    data?.Select(x => new CountryCoordinatesResponseListItem(
                         x.Id,
                         x.CoordinateId,
                         _polygonParserSL.FromPolygonToDoubleArray(x.CoordinateEntity?.PolygonEntity),

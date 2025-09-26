@@ -2,10 +2,10 @@
 
 using Insania.Shared.Models.Responses.Base;
 
-namespace Insania.Politics.Models.Responses.CountriesCoordinates;
+namespace Insania.Politics.Models.Responses.CountryCoordinates;
 
 /// <summary>
-/// Модель ответа списком координат стран
+/// Модель ответа списком координат страны
 /// </summary>
 /// <param cref="bool" name="success">Признак успешности</param>
 /// <param cref="long?" name="id">Идентификатор страны</param>
@@ -14,7 +14,7 @@ namespace Insania.Politics.Models.Responses.CountriesCoordinates;
 /// <param cref="int?" name="zoom">Коэффициент масштаба отображения страны</param>
 /// <param cref="List{CountriesCoordinatesResponseListItem}?" name="items">Список координат</param>
 
-public class CountriesCoordinatesResponseList(bool success, long? id = null, string? name = null, Point? center = null, int? zoom = null, List<CountriesCoordinatesResponseListItem>? items = null) : BaseResponse(success, id)
+public class CountryCoordinatesResponseList(bool success, long? id = null, string? name = null, Point? center = null, int? zoom = null, List<CountryCoordinatesResponseListItem>? items = null) : BaseResponse(success, id)
 {
     /// <summary>
     /// Наименование страны
@@ -34,5 +34,5 @@ public class CountriesCoordinatesResponseList(bool success, long? id = null, str
     /// <summary>
     /// Список координат
     /// </summary>
-    public List<CountriesCoordinatesResponseListItem>? Items { get; set; } = items;
+    public List<CountryCoordinatesResponseListItem>? Items { get; set; } = items;
 }
