@@ -120,7 +120,7 @@ public class CountriesBL(ILogger<CountriesBL> logger, IMapper mapper, ICountries
                                         y.Id,
                                         y.CoordinateId,
                                         _polygonParserSL.FromPolygonToDoubleArray(y.CoordinateEntity?.PolygonEntity),
-                                        y.CoordinateEntity?.TypeEntity?.BackgroundColor,
+                                        x.Color,
                                         y.CoordinateEntity?.TypeEntity?.BorderColor
                                     )
                                 ) ?? []
