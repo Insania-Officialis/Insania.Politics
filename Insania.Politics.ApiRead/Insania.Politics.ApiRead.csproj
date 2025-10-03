@@ -38,6 +38,7 @@
     <ProjectReference Include="..\Insania.Politics.Messages\Insania.Politics.Messages.csproj" />
     <ProjectReference Include="..\Insania.Politics.Middleware\Insania.Politics.Middleware.csproj" />
     <ProjectReference Include="..\Insania.Politics.Models\Insania.Politics.Models.csproj" />
+    <ProjectReference Include="..\Insania.Politics.Services\Insania.Politics.Services.csproj" />
   </ItemGroup>
 
 </Project>

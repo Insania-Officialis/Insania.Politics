@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Insania.Politics.Contracts\Insania.Politics.Contracts.csproj" />
     <ProjectReference Include="..\Insania.Politics.DataAccess\Insania.Politics.DataAccess.csproj" />
-    <ProjectReference Include="..\Insania.Politics.Database\Insania.Politics.Database.csproj" />
   </ItemGroup>
 
 </Project>
