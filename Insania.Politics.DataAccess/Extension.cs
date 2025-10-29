@@ -27,5 +27,6 @@ public static class Extension
             .AddScoped<IAreasDAO, AreasDAO>() //сервис работы с данными областей
             .AddScoped<ILocalitiesLevelsDAO, LocalitiesLevelsDAO>() //сервис работы с данными уровней населённых пунктов
             .AddScoped<ILocalitiesDAO, LocalitiesDAO>() //сервис работы с данными населённых пунктов
+            .AddScoped<IParametersDAO, ParametersDAO>() //сервис работы с данными параметров
         ;
 }

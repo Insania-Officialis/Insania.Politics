@@ -48,6 +48,7 @@ public abstract class BaseTest
            {"InitializationDataSettings:Tables:Areas", "true"},
            {"InitializationDataSettings:Tables:LocalitiesLevels", "true"},
            {"InitializationDataSettings:Tables:Localities", "true"},
+           {"InitializationDataSettings:Tables:Parameters", "true"},
            {"TokenSettings:Issuer", "Politics.Test"},
            {"TokenSettings:Audience", "Politics.Test"},
            {"TokenSettings:Key", "This key is generated for tests in the user zone"},

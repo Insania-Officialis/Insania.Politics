@@ -37,6 +37,9 @@ namespace Insania.Politics.DataAccess;
 public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContext politicsContext, LogsApiPoliticsContext logsApiPoliticsContext, IOptions<InitializationDataSettings> settings, ITransliterationSL transliteration, IPolygonParserSL polygonParser, IConfiguration configuration) : IInitializationDAO
 {
     #region Поля
+    /// <summary>
+    /// Пользователь, вносящий изменения
+    /// </summary>
     private readonly string _username = "initializer";
     #endregion
 
@@ -894,6 +897,53 @@ public class InitializationDAO(ILogger<InitializationDAO> logger, PoliticsContex
 
                     //Сохранение изменений в бд
                     await _politicsContext.SaveChangesAsync();
+
+                    //Фиксация транзакции
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    //Откат транзакции
+                    transaction.Rollback();
+
+                    //Проброс исключения
+                    throw;
+                }
+            }
+            if (_settings.Value.Tables?.Parameters == true)
+            {
+                //Открытие транзакции
+                IDbContextTransaction transaction = _politicsContext.Database.BeginTransaction();
+
+                try
+                {
+                    //Создание коллекции сущностей
+                    List<ParameterPolitics> entities =
+                    [
+                        new(_transliteration, 10000, _username, "Удалённый", dateDeleted: DateTime.UtcNow),
+                        new(_transliteration, 1, _username, "Ссылка на файловый сервис", "http://192.168.31.234:7082"),
+                        new(_transliteration, 2, _username, "Метод получения файлов", "/files/by_id"),
+                    ];
+
+                    //Проход по коллекции сущностей
+                    foreach (var entity in entities)
+                    {
+                        //Добавление сущности в бд при её отсутствии
+                        if (!_politicsContext.Parameters.Any(x => x.Id == entity.Id)) await _politicsContext.Parameters.AddAsync(entity);
+                    }
+
+                    //Сохранение изменений в бд
+                    await _politicsContext.SaveChangesAsync();
+
+                    //Создание шаблона файла скриптов
+                    string pattern = @"^t_parameters_\d+.sql";
+
+                    //Проходим по всем скриптам
+                    foreach (var file in Directory.GetFiles(_settings.Value.ScriptsPath!).Where(x => Regex.IsMatch(Path.GetFileName(x), pattern)))
+                    {
+                        //Выполняем скрипт
+                        await ExecuteScript(file, _politicsContext);
+                    }
 
                     //Фиксация транзакции
                     transaction.Commit();

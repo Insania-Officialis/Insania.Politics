@@ -88,6 +88,11 @@ public class InitializationDataSettingsIncludeTables
     /// Населённые пункты
     /// </summary>
     public bool? Localities { get; set; }
+
+    /// <summary>
+    /// Параметры
+    /// </summary>
+    public bool? Parameters { get; set; }
 }
 
 /// <summary>
