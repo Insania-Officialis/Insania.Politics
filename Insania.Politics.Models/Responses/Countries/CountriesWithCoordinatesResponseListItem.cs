@@ -3,15 +3,13 @@
 namespace Insania.Politics.Models.Responses.Countries;
 
 /// <summary>
-/// Модель ответа списком стран с координатами
+/// Модель элемента ответа списком стран с координатами
 /// </summary>
-/// <param cref="bool" name="success">Признак успешности</param>
 /// <param cref="long?" name="id">Идентификатор страны</param>
 /// <param cref="string?" name="name">Наименование страны</param>
 /// <param cref="double?[]?" name="center">Центр страны</param>
 /// <param cref="int?" name="zoom">Коэффициент масштаба отображения страны</param>
 /// <param cref="List{GeographyObjectCoordinatesResponseListItem}?" name="coordinates">Список координат</param>
-
 public class CountriesWithCoordinatesResponseListItem(long? id = null, string? name = null, double?[]? center = null, int? zoom = null, List<CountryCoordinatesResponseListItem>? coordinates = null)
 {
     /// <summary>
