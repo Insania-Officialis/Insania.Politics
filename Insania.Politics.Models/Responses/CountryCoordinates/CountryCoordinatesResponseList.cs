@@ -13,9 +13,9 @@ namespace Insania.Politics.Models.Responses.CountryCoordinates;
 /// <param cref="Point?" name="center">Центр страны</param>
 /// <param cref="int?" name="zoom">Коэффициент масштаба отображения страны</param>
 /// <param cref="List{CountriesCoordinatesResponseListItem}?" name="items">Список координат</param>
-
 public class CountryCoordinatesResponseList(bool success, long? id = null, string? name = null, Point? center = null, int? zoom = null, List<CountryCoordinatesResponseListItem>? items = null) : BaseResponse(success, id)
 {
+    #region Поля
     /// <summary>
     /// Наименование страны
     /// </summary>
@@ -35,4 +35,5 @@ public class CountryCoordinatesResponseList(bool success, long? id = null, strin
     /// Список координат
     /// </summary>
     public List<CountryCoordinatesResponseListItem>? Items { get; set; } = items;
+    #endregion
 }
